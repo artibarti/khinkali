@@ -23,6 +23,7 @@ namespace Lika
 		public:
 			Vector();
 			Vector(std::initializer_list<T> il);
+			Vector(T t);
 
 			int getSize();
 			std::vector<T> getValues();
@@ -46,13 +47,19 @@ namespace Lika
 	}
 
 	template<typename T, int S>
+	Vector<T,S>::Vector(T t)
+	{
+		for (int i = 0; i<size; i++)
+			values.push_back(t);
+	}
+
+	template<typename T, int S>
 	Vector<T,S>::Vector(std::initializer_list<T> il)
 	{
 		if (il.size() == S)
 			values = il;
 		else
 			throw std::invalid_argument( "initializer list size does not corresponding fot this type" );
-
 	}
 
 	template<typename T, int S>
@@ -138,7 +145,8 @@ namespace Lika
 	template<typename T, int S>
 	void Vector<T,S>::showInfo()
 	{
-		std::cout << "Vector of type " << boost::typeindex::type_id<T>().pretty_name() << " and size of " << S << std::endl;
+		std::cout << "Vector of type " << boost::typeindex::type_id<T>().pretty_name() 
+			<< " and size of " << S << std::endl;
 
 		for (int i = 0; i<size; i++)
 		{

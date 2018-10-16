@@ -22,7 +22,22 @@ int main(int argc, char** argv)
     vec3i v5 {4,0,0};
     vec3i v6 {0,-3,0};
 
-    std::cout << v5.getDistanceFrom(v6);
+    std::cout << v5.getDistanceFrom(v6) << std::endl;
 
+    mat2x2d m1 
+    {
+        {2,5},
+        {5,6}
+    };
+
+    mat4x4i m2 
+    {
+        {1,2,3,4},
+        {1,2,3,5},
+        {1,2,3,6},
+        {1,2,3,7},
+    };
+
+    m2.showInfo();
 
 }
