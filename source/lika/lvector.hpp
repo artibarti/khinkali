@@ -26,15 +26,16 @@ namespace Lika
 			Vector(T t);
 
 			int getSize();
-			std::vector<T> getValues();
+			std::vector<T> getValues() const;
 			T& operator[] (int index);
-			double getNorm();
-			double getDistanceFrom(Vector v);
+			T get(int index) const;
+			double getNorm() const;
+			double getDistanceFrom(const Vector& v);
 
 			Vector& reverse();
-			Vector& operator= (Vector v);
-			Vector operator+ (Vector v);
-			Vector operator- (Vector v);
+			Vector& operator= (const Vector& v);
+			Vector<T,S> operator+ (const Vector<T,S>& v) const;
+			Vector<T,S> operator- (const Vector<T,S>& v) const;
 			
 			void showInfo();
 	};
@@ -69,13 +70,14 @@ namespace Lika
 	}
 
 	template<typename T, int S>
-	double Vector<T,S>::getDistanceFrom(Vector<T,S> v)
+	double Vector<T,S>::getDistanceFrom(const Vector<T,S>& v)
 	{
+		v-*this;
 		return (v-*this).getNorm();
 	}
 
 	template<typename T, int S>
-	double Vector<T,S>::getNorm()
+	double Vector<T,S>::getNorm() const
 	{
 		double retrunVal = 0;
 
@@ -88,7 +90,7 @@ namespace Lika
 	}
 
 	template<typename T, int S>
-	std::vector<T> Vector<T,S>::getValues()
+	std::vector<T> Vector<T,S>::getValues() const
 	{
 		return values;
 	}
@@ -103,14 +105,25 @@ namespace Lika
 	}
 
 	template<typename T, int S>
-	Vector<T,S>& Vector<T,S>::operator= (Vector<T,S> v)
+	T Vector<T,S>::get(int index) const
 	{
-		values = v.getValues();
+		if (size > index && index >= 0)
+			return values[index];
+		else 
+			throw std::invalid_argument( "index value is out of bounds" );
+	}
+
+	template<typename T, int S>
+	Vector<T,S>& Vector<T,S>::operator= (const Vector<T,S>& v)
+	{
+		values.clear();
+		for (int i = 0; i<size; i++)
+			values.push_back(v.getValues()[i]);
 		return *this;
 	}
 
 	template<typename T, int S>
-	Vector<T,S> Vector<T,S>::operator+ (Vector v)
+	Vector<T,S> Vector<T,S>::operator+ (const Vector& v) const
 	{
 		Vector<T,S> result;
 
@@ -123,13 +136,13 @@ namespace Lika
 	}
 
 	template<typename T, int S>
-	Vector<T,S> Vector<T,S>::operator- (Vector v)
+	Vector<T,S> Vector<T,S>::operator- (const Vector& v) const
 	{
 		Vector<T,S> result;
 
 		for (int i = 0; i < size; i++)
 		{
-			result[i] = v[i] -values[i];
+			result[i] = v.get(i) - this->get(i);
 		}		
 
 		return result;
