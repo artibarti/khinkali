@@ -19,9 +19,9 @@ int main(int argc, char** argv)
 
     triangle -> setColors(
         {
-            glm::vec3(1.0f, 0.0f, 0.0f),
-            glm::vec3(0.0f, 1.0f, 0.0f),
-            glm::vec3(0.0f, 0.0f, 1.0f)
+            glm::vec3(0.5f, 0.5f, 0.5f),
+            glm::vec3(0.7f, 0.7f, 0.7f),
+            glm::vec3(0.9f, 0.9f, 1.0f)
         });
 
     triangle2 -> setVertices( 
@@ -31,9 +31,16 @@ int main(int argc, char** argv)
             glm::vec3( 0.0f,  0.3f, 0.0f)
         });
 
+    triangle2 -> setColors(
+        {
+            glm::vec3(0.5f, 0.5f, 0.5f),
+            glm::vec3(0.7f, 0.7f, 0.7f),
+            glm::vec3(0.9f, 0.9f, 1.0f)
+        });
+
     core.addScene("Test scene");
 
-    core.lookupScene("Test scene").setBackground(0.0, 0.7, 0.3);
+    core.lookupScene("Test scene").setBackground(0.9,0.5,0.0);
     core.lookupScene("Test scene").addShape("my triangle", triangle);
     core.lookupScene("Test scene").addShape("my triangle2", triangle2);
     core.lookupScene("Test scene").addShader("vs", "shaders/first.vs", GL_VERTEX_SHADER);
