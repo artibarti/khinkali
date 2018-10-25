@@ -12,12 +12,7 @@ namespace Lanuka
     const glm::vec3 GL_COLOR_GREEN = {0.0, 1.0, 0.0};
     const glm::vec3 GL_COLOR_BLACK = {0.0, 0.0, 0.0};
     const glm::vec3 GL_COLOR_WHITE = {1.0, 1.0, 1.0};
-
-    std::map<GLShapeType, int> GLInitializerListSizeConstraints =
-    {
-        {GL_TRIANGLE, 3},
-        {GL_RECTANGLE, 4},
-    };
+    
 };
 
 

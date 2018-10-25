@@ -9,5 +9,6 @@
 #include "glscene2D.hpp"
 #include "glshape.hpp"
 #include "gltriangle.hpp"
+#include "glshader.hpp"
 
 #endif

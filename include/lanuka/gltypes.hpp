@@ -11,8 +11,19 @@ namespace Lanuka
         GL_SHIFT_3D, GL_ROTATE_3D, GL_MIRROR_3D, GL_SCALE_3D
     };
 
-    enum GLShapeType { GL_RECTANGLE, GL_TRIANGLE, GL_CIRCLE };
-    enum GLShaderType { GL_SHADER_TYPE_VERTEX, GL_SHADER_TYPE_FRAGMENT };
+    enum GLShapeType 
+    { 
+        GL_RECTANGLE, 
+        GL_TRIANGLE, 
+        GL_CIRCLE 
+    };
+    
+    enum GLShaderType 
+    { 
+        GL_SHADER_TYPE_VERTEX, 
+        GL_SHADER_TYPE_FRAGMENT 
+    };    
+
 };
 
 #endif

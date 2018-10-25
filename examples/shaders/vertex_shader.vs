@@ -10,18 +10,18 @@ in vec3 vPos;
 
 /** Második bemeneti objektumunk, a szín. Hasonló
     dolgok igazak rá is, mint az előző attribútumra. */
-in vec3 vColor;
+/** in vec3 vColor; */
 
 /** Egyetlen kimeneti attribútumunk, amelyet a következő
     "shader stage", azaz a következő shader kap meg. */
-out vec3 vColorVS;
+/** out vec3 vColorVS; */
 
 void main()
 {
     /** Adjuk tovább egy az egyben a csúcshoz tartozó színt. A rendszer
         fogja lekezelni, hogy hogyan kell a csúcsokhoz tartozó színekből
         (attribútumokból) a konkrét pixelekhez tartozóakat előállítani. */
-    vColorVS = vColor;
+    /** vColorVS = vColor; */
     
     /** Írjuk ki a csúcshoz tartozó pozíció koordinátáit. Erre a GLSL
         beépített változóját kell használnunk. */

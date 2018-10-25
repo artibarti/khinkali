@@ -1,6 +1,8 @@
 #ifndef GL_SCENE2D_H
 #define GL_SCENE2D_H
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include "gltypes.hpp"
 #include <string>
 #include <vector>
@@ -10,6 +12,7 @@
 #include <fstream>
 #include "gllog.hpp"
 #include "glshape.hpp"
+#include "glshader.hpp"
 
 namespace Lanuka
 {
@@ -18,21 +21,24 @@ namespace Lanuka
     {
         public:
             GLScene2D();
-            GLScene2D(std::string _scene_name);
+            GLScene2D(std::string _scene_name, GLFWwindow* window);
 
             void draw();
             bool isItYourName(std::string name) const;
             void setBackground(glm::vec3 color);
             void setBackground(double r, double g, double b);
             std::string getName() const;
-            void addShape(GLShape* shape);
+            void addShape(std::string name, GLShape* shape);
             void showInfo() const;
 
         private:
             std::string loadShaderFromFile(const std::string& filename);
-            std::vector<GLShape*> shapes;
             std::string scene_name;
             glm::vec3 backgroundColor;
+            
+            std::map<std::string, GLShader> shaders;
+            std::map<std::string, GLShape*> shapes;
+
     };
 
     GLScene2D::GLScene2D()
@@ -40,9 +46,9 @@ namespace Lanuka
 
     }
 
-    GLScene2D::GLScene2D(std::string _scene_name)
+    GLScene2D::GLScene2D(std::string _scene_name, GLFWwindow* window)
     {
-        scene_name = _scene_name;
+        scene_name = _scene_name;        
     }
 
     bool GLScene2D::isItYourName(std::string name) const
@@ -56,8 +62,8 @@ namespace Lanuka
         glClearDepth(1.0);        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        for (auto *shape : shapes)
-            shape -> draw();
+        for (auto shape : shapes)
+            shape.second -> draw();
     }
 
     void GLScene2D::setBackground(glm::vec3 color)
@@ -83,9 +89,9 @@ namespace Lanuka
         std::cout << std::endl;
     }
 
-    void GLScene2D::addShape(GLShape* shape)
+    void GLScene2D::addShape(std::string name, GLShape* shape)
     {
-        shapes.push_back(shape);
+        shapes[name] = shape;
     }
 
 }

@@ -51,6 +51,8 @@ namespace Lanuka
             return;
         }
 
+	    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
         glfwMakeContextCurrent(window);
         glewExperimental = GL_TRUE;
         if (glewInit() != GLEW_OK)
@@ -58,8 +60,8 @@ namespace Lanuka
             glfwTerminate();
                 return;
         }
-        glfwMakeContextCurrent(window);
 
+        glfwMakeContextCurrent(window);
     }
 
     void GLCore::start()
@@ -77,7 +79,7 @@ namespace Lanuka
 
     void GLCore::addScene(std::string scene_name)
     {
-        GLScene2D scene(scene_name);
+        GLScene2D scene(scene_name, window);
         scenes[scene_name] = scene;
     }
 

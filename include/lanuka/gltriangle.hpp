@@ -18,8 +18,19 @@ namespace Lanuka
 
     GLTriangle::GLTriangle()
     {        
+        vertices.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
+	    vertices.push_back(glm::vec3( 0.5f, -0.5f, 0.0f));
+	    vertices.push_back(glm::vec3( 0.0f,  0.5f, 0.0f));
+        colors.push_back(glm::vec3( 1.0f, 0.0f, 0.0f));
+	    colors.push_back(glm::vec3( 0.0f, 1.0f, 0.0f));
+	    colors.push_back(glm::vec3( 0.0f, 0.0f, 1.0f));
+
         draw_mode = GL_TRIANGLES;
-        init();        
+        initBuffers();      
+        addShader(GL_SHADER_TYPE_VERTEX, "shaders/first.vs");        
+        //addShader(GL_SHADER_TYPE_FRAGMENT, "shaders/first.fs");
+        attachShaders();
+  
     }
 }
 
