@@ -13,6 +13,7 @@
 #include "gllog.hpp"
 #include "glshape.hpp"
 #include "glshader.hpp"
+#include "glexcepion.hpp"
 
 namespace Lanuka
 {
@@ -23,20 +24,23 @@ namespace Lanuka
             GLScene2D();
             GLScene2D(std::string _scene_name, GLFWwindow* window);
 
-            void draw();
+            std::string getName() const;
             bool isItYourName(std::string name) const;
+
+            void draw();
+            void showInfo() const;
             void setBackground(glm::vec3 color);
             void setBackground(double r, double g, double b);
-            std::string getName() const;
-            void addShape(std::string name, GLShape* shape);
-            void showInfo() const;
+            void addShape(std::string tag, GLShape* shape);
+            void addShader(std::string tag, std::string filename, int type);
+            void attachShaderToShape(std::string shader, std::string shape);
 
         private:
             std::string loadShaderFromFile(const std::string& filename);
             std::string scene_name;
             glm::vec3 backgroundColor;
             
-            std::map<std::string, GLShader> shaders;
+            std::map<std::string, GLShader*> shaders;
             std::map<std::string, GLShape*> shapes;
 
     };
@@ -89,9 +93,28 @@ namespace Lanuka
         std::cout << std::endl;
     }
 
-    void GLScene2D::addShape(std::string name, GLShape* shape)
+    void GLScene2D::addShape(std::string tag, GLShape* shape)
     {
-        shapes[name] = shape;
+        auto search = shaders.find(tag);
+        if (search != shaders.end())
+            throw glDplicatedShapeNameException();
+        else
+            shapes[tag] = shape;
+    }
+
+    void GLScene2D::addShader(std::string tag, std::string filename, int type)
+    {
+        GLShader *shader = new GLShader(filename, type);
+        shaders[tag] = shader;
+    }
+
+    void GLScene2D::attachShaderToShape(std::string shader, std::string shape)
+    {
+        auto search = shaders.find(shader);
+        if (search != shaders.end())
+            shapes[shape] -> attachShader(shaders[shader] -> getShader());
+        else
+            throw glShaderNotLoadedForSceneException();
     }
 
 }

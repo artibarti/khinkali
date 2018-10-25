@@ -80,7 +80,6 @@ namespace Lanuka
         const GLchar* shader_code_ptr[] = { shader_code.c_str() };
         glShaderSource(shader, 1, shader_code_ptr, NULL);
         glCompileShader(shader);
-
     }
 
 };

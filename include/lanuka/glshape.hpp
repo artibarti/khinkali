@@ -19,33 +19,26 @@ namespace Lanuka
             std::vector<glm::vec3>& getVertives();
             std::vector<glm::vec3>& getColors();
             void draw();
-            void attachShader(std::string name);
+            void attachShader(GLuint& shader);
+            void setVertices(std::initializer_list<glm::vec3> il);
+            void setColors(std::initializer_list<glm::vec3> il);
+            void setIndices(std::initializer_list<glm::vec3> il);
 
         protected:
 
             void initBuffers();
-            void addShader(GLShaderType shader_type, std::string filename);
-            void attachShaders();
+            void clearBuffers();
 
             std::vector<glm::vec3> vertices;
             std::vector<glm::vec3> colors;
             std::vector<glm::vec3> indices;
-
             std::vector<std::string> shaders;
 
             GLuint vertex_buffer = 0, color_buffer = 0;
             GLuint vertex_array = 0;
             GLuint program = 0;
-            GLuint vertex_shader;
-            GLuint fragment_shader;
-            
-            std::string vertex_shader_code;
-            std::string fragment_shader_code;
 
             int draw_mode;
-            bool use_program = false;
-            bool use_vertex_shader = false;
-            bool use_fragment_shader = false;
     };
 
     GLShape::~GLShape()
@@ -82,63 +75,43 @@ namespace Lanuka
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
+    
+    void GLShape::clearBuffers()
+    {
+
+    }
 
     void GLShape::draw()
     {
-        if (use_program)
-            glUseProgram(program);
+        glUseProgram(program);
         glBindVertexArray(vertex_array);
         glDrawArrays(draw_mode, 0,3);
         glBindVertexArray(0);
     }
 
-    void GLShape::addShader(GLShaderType shader_type, std::string filename)
+    void GLShape::attachShader(GLuint& shader)
     {
-        std::string shader_code = loadShaderFromFile(filename);
-        if (shader_code != "")
-            if (shader_type == GL_SHADER_TYPE_VERTEX)
-            {
-                vertex_shader_code = shader_code;
-                vertex_shader =  glCreateShader(GL_VERTEX_SHADER);
-                const GLchar* vertex_shader_code_ptr[] = { vertex_shader_code.c_str() };
-                glShaderSource(vertex_shader, 1, vertex_shader_code_ptr, NULL);
-                glCompileShader(vertex_shader);
-            }
-            else if (shader_type == GL_SHADER_TYPE_FRAGMENT)
-            {
-                fragment_shader_code = shader_code;
-                fragment_shader =  glCreateShader(GL_FRAGMENT_SHADER);
-                const GLchar* fragment_shader_code_ptr[] = { fragment_shader_code.c_str() };
-                glShaderSource(fragment_shader, 1, fragment_shader_code_ptr, NULL);
-                glCompileShader(fragment_shader);
-            }
-            else
-                throw glUnknownShaderTypeException();
-        else
-            throw glShaderLoadException();
-    }
-
-    void GLShape::attachShaders()
-    {
-        program = glCreateProgram();
-        glAttachShader(program, vertex_shader);
-        glAttachShader(program, fragment_shader);
+        glAttachShader(program, shader);
         glLinkProgram(program);
-
-        glDetachShader(program, vertex_shader);
-        glDeleteShader(vertex_shader);
-        glDetachShader(program, fragment_shader);
-        glDeleteShader(fragment_shader);      
-
-        use_program = true;  
+        glDeleteShader(shader);      
     }
 
-    void GLShape::attachShader(std::string name)
+    void GLShape::setVertices(std::initializer_list<glm::vec3> il)
     {
-        if (std::find(shaders.begin(), shaders.end(), name) != shaders.end())
-            return;
-        else
-            shaders.push_back(name);
+        vertices = il;
+        initBuffers();   
+    }
+
+    void GLShape::setColors(std::initializer_list<glm::vec3> il)
+    {
+        colors = il;
+        initBuffers();   
+    }
+
+    void GLShape::setIndices(std::initializer_list<glm::vec3> il)
+    {
+        indices = il;
+        initBuffers();   
     }
 
 }
