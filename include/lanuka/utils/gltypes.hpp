@@ -24,6 +24,11 @@ namespace Lanuka
         GL_SHADER_TYPE_FRAGMENT 
     };    
 
+    enum GLDrawableType 
+    {
+        GL_DRAWABLE_TYPE_TRIANGLE,
+        GL_DRAWABLE_TYPE_RECTANGLE
+    };
 };
 
 #endif

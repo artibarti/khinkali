@@ -7,8 +7,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "gltypes.hpp"
-#include "glutils.hpp"
+#include "utils/gltypes.hpp"
+#include "utils/glutils.hpp"
 
 namespace Lanuka
 {

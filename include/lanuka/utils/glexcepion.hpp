@@ -28,11 +28,11 @@ class glUnknownShaderTypeException: public std::exception
     }
 };
 
-class glDplicatedShapeNameException: public std::exception
+class glDplicatedObjectNameException: public std::exception
 {
     virtual const char* what() const throw()
     {
-        return "glDplicatedShapeNameException";
+        return "glDplicatedObjectNameException";
     }
 };
 

@@ -10,7 +10,7 @@
 #include <string>
 #include <map>
 #include "glscene2D.hpp"
-#include "glexcepion.hpp"
+#include "utils/glexcepion.hpp"
 #include <thread>
 
 namespace Lanuka
@@ -22,15 +22,14 @@ namespace Lanuka
             GLCore(int win_width, int win_height, const char* win_name = NULL);
             void start();
             void terminate();
-            void addScene(std::string scene_name);
+            void attachScene(GLScene2D* scene);
             void removeScene(std::string scene_name);
-            GLScene2D& lookupScene(std::string scene_name);
             void showInfo();
         
         private:
             GLFWwindow* window;
-            std::map<std::string, GLScene2D> scenes;
-            std::string window_name;
+            std::vector<GLScene2D*> scenes;
+            std::string window_name = "Unnamed window";
             int window_size[2] = {0,0}; 
 
     };
@@ -43,6 +42,8 @@ namespace Lanuka
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        window_name = win_name;
 
         window = glfwCreateWindow(640, 480, win_name, NULL, NULL);
         if (!window)
@@ -62,6 +63,10 @@ namespace Lanuka
         }
 
         glfwMakeContextCurrent(window);
+
+        window_size[0] = win_width;
+        window_size[1] = win_height;
+        window_name = win_name;
     }
 
     void GLCore::start()
@@ -70,35 +75,29 @@ namespace Lanuka
         {
             glfwPollEvents();
 
-            for (auto &scene : scenes)
-                scene.second.draw();
+            for (auto scene : scenes)
+                scene -> draw();
 
             glfwSwapBuffers(window);
         }
     }
 
-    void GLCore::addScene(std::string scene_name)
+    void GLCore::attachScene(GLScene2D* scene)
     {
-        GLScene2D scene(scene_name, window);
-        scenes[scene_name] = scene;
+        scenes.push_back(scene);
     }
 
     void GLCore::removeScene(std::string scene_name)
     {
-        scenes.erase(scenes.find(scene_name));
+
     }
   
-    GLScene2D& GLCore::lookupScene(std::string scene_name)
-    {
-        return scenes[scene_name];
-    }
-
     void GLCore::showInfo()
     {
         std::cout << "GLCore object with " << scenes.size() << " scenes" << std::endl;
-        for (auto const& x : scenes)
+        for (auto x : scenes)
         {
-            std::cout << "Scene: " << x.second.getName() << std::endl;
+            std::cout << "Scene: " << x -> getName() << std::endl;
         }
 
         std::cout << std::endl;
