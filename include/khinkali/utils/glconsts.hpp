@@ -18,10 +18,13 @@ namespace khinkali
     {
         {GL_DRAWABLE_TYPE_TRIANGLE, 3},
         {GL_DRAWABLE_TYPE_RECTANGLE, 4},
+        {GL_DRAWABLE_TYPE_CUBE, 8}
     };
 
     const int UNIFORM_MODEL = 0;
     const int UNIFORM_VIEWPROJECTION = 1;
+    const int UNIFORM_MODELVIEWPROJECTION = 0;
+
     
     const int VERTEX_ATTRIB_POS = 0;
     const int VERTEX_ATTRIB_NORMAL = 2;

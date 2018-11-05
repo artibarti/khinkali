@@ -27,17 +27,19 @@ namespace khinkali
             void initVertexBuffer();
             void initColorBuffer();
             void initIndexBuffer();
+            void initNormalBuffer();
 
             void deleteBuffers();
 
             // vectors
             std::vector<glm::vec3> vertices;
             std::vector<glm::vec3> colors;
+            std::vector<glm::vec3> normals;
             std::vector<GLuint> indices;
             std::vector<std::string> shaders;
             
             // opengl objects
-            GLuint vertex_buffer = 0, color_buffer = 0, index_buffer = 0;
+            GLuint vertex_buffer = 0, color_buffer = 0, index_buffer = 0, normal_buffer = 0;
             GLuint vertex_array = 0;
             GLuint program = 0; 
 
@@ -94,6 +96,15 @@ namespace khinkali
 	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);        
     }
+
+    void GLDrawable::initNormalBuffer()
+    {
+        glGenBuffers(1, &normal_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
+        glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
 
     void GLDrawable::draw()
     {

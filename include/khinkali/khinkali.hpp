@@ -15,5 +15,6 @@
 #include "drawables/gldrawable.hpp"
 #include "drawables/gltriangle.hpp"
 #include "drawables/glrectangle.hpp"
+#include "drawables/glcube.hpp"
 
 #endif

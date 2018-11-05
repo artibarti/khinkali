@@ -62,7 +62,7 @@ namespace khinkali
 
         yaw = 0.0;
         pitch = 0.0;
-        speed = 10.0;
+        speed = 3.0;
     }
 
     GLCamera::GLCamera(int width, int height)
@@ -71,7 +71,7 @@ namespace khinkali
 
         yaw = 0.0;
         pitch = 0.0;
-        speed = 10.0;
+        speed = 0.01f;
 
         static GLdouble mouseX = -1.0;
         static GLdouble mouseY = -1.0;
@@ -84,13 +84,6 @@ namespace khinkali
 
     void GLCamera::initMatrices()
     {
-        /*
-        modelMatrix = glm::mat4(1.0f);
-        viewMatrix = glm::lookAt(glm::vec3(0.0f, 1.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));        projectionMatrix = glm::perspective(glm::radians(45.0f), GLfloat(scene_width)/GLfloat(scene_height), 0.001f, 1000.0f);
-        projectionMatrix = glm::perspective(glm::radians(60.0f), (float)scene_width/(float)scene_height, 0.1f, 100.0f);        
-        viewProjectionMatrix = projectionMatrix * viewMatrix;
-        */
-
         glm::mat4 rotation = 
             glm::rotate(yaw, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::rotate(pitch, glm::vec3(1.0f, 0.0f, 0.0f));
 

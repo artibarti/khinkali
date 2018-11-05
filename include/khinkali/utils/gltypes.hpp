@@ -10,13 +10,6 @@ namespace khinkali
         GL_SHIFT_2D, GL_ROTATE_2D, GL_MIRROR_2D, GL_SCALE_2D,
         GL_SHIFT_3D, GL_ROTATE_3D, GL_MIRROR_3D, GL_SCALE_3D
     };
-
-    enum GLShapeType 
-    { 
-        GL_RECTANGLE, 
-        GL_TRIANGLE, 
-        GL_CIRCLE 
-    };
     
     enum GLShaderType 
     { 
@@ -27,7 +20,8 @@ namespace khinkali
     enum GLDrawableType 
     {
         GL_DRAWABLE_TYPE_TRIANGLE,
-        GL_DRAWABLE_TYPE_RECTANGLE
+        GL_DRAWABLE_TYPE_RECTANGLE,
+        GL_DRAWABLE_TYPE_CUBE        
     };
 };
 

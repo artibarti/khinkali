@@ -78,8 +78,8 @@ namespace khinkali
         glClearDepth(1.0);        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	    glUniformMatrix4fv(UNIFORM_MODEL, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-    	glUniformMatrix4fv(UNIFORM_VIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(viewProjectionMatrix));
+	    // glUniformMatrix4fv(UNIFORM_MODEL, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+    	glUniformMatrix4fv(UNIFORM_MODELVIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(camera.getModelViewProjectionMatrix()));
 
         for (auto drawable : drawables)
             drawable.second -> draw();
@@ -145,6 +145,7 @@ namespace khinkali
 
     void GLScene::keyPressed(GLint key, GLint scanCode, GLint action, GLint mods)
     {
+        bool needToRecalcViewMatrices = false;
 
         if (action == GLFW_PRESS || action == GLFW_REPEAT)
         {
@@ -153,18 +154,22 @@ namespace khinkali
 
                 case GLFW_KEY_W:
                     camera.setCamPosition ( camera.getCamPosition() + camera.getForward() * camera.getCamSpeed() );
+                    needToRecalcViewMatrices = true;
                     break;
             
                 case GLFW_KEY_S: 
                     camera.setCamPosition ( camera.getCamPosition() - camera.getForward() * camera.getCamSpeed() ); 
+                    needToRecalcViewMatrices = true;
                     break;
             
                 case GLFW_KEY_A: 
                     camera.setCamPosition ( camera.getCamPosition() - camera.getRight() * camera.getCamSpeed() ); 
+                    needToRecalcViewMatrices = true;
                     break;
             
                 case GLFW_KEY_D: 
                     camera.setCamPosition ( camera.getCamPosition() + camera.getRight() * camera.getCamSpeed() ); 
+                    needToRecalcViewMatrices = true;
                     break;
             
                 case GLFW_KEY_ESCAPE:
@@ -173,13 +178,13 @@ namespace khinkali
             }
         }
         
-        camera.initMatrices();        
+        if (needToRecalcViewMatrices)
+            camera.initMatrices();        
         glfwPollEvents();
     }
 
     void GLScene::mouseMoved(GLdouble x, GLdouble y)
-    {
-
+    {        
         if (camera.getMouseX() == -1.0)
         {
             camera.setMouseX(x);
@@ -193,7 +198,7 @@ namespace khinkali
         camera.setMouseX(x);
         camera.setMouseY(y);
         
-        camera.setPitch( glm::clamp<GLfloat>(camera.getPitch() - deltaY * camera.getCamSpeed(), glm::radians(-89.0f), glm::radians(179.0f)) );
+        //camera.setPitch( glm::clamp<GLfloat>(camera.getPitch() - deltaY * camera.getCamSpeed(), glm::radians(-89.0f), glm::radians(179.0f)) );
         camera.setYaw( camera.getYaw() - deltaX * camera.getCamSpeed() );
         
         camera.initMatrices();        

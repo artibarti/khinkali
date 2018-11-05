@@ -79,6 +79,7 @@ namespace khinkali
 
 	    glfwSetKeyCallback(window, keyPressedEventCatcher);
 	    glfwSetCursorPosCallback(window, mouseMovedEventCatcher);
+    	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
     void GLCore::start()
