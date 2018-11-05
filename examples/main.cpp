@@ -57,13 +57,24 @@ int main(int argc, char** argv)
     GLCube cube = GLCube(glm::vec3(0,0,0), 1.0);
     cube.setColor(GL_COLOR_BLUE);
 
+    GLTriangle triangle
+    (
+        glm::vec2(-3.5, -3.5), 
+        glm::vec2( -2.5, -3.5), 
+        glm::vec2( -2.0, 1.5)
+    );
+    triangle.setColor(GL_COLOR_LIGHTBLUE);
+
+
     GLScene scene = GLScene(640,480);
     core.attachScene(0, &scene);
-    scene.setBackground(GL_COLOR_RED);
+    scene.setBackground(GL_COLOR_ORANGE);
+    // scene.addDrawable("my triangle", &triangle);
     scene.addDrawable("my cube", &cube);
 
     scene.addShader("vs", "shaders/static_view_vertex_shader.vs", GL_VERTEX_SHADER);
     scene.addShader("fs", "shaders/static_view_fragment_shader.fs", GL_FRAGMENT_SHADER);
+    // scene.attachShadersToDrawable("my triangle", {"vs", "fs"});
     scene.attachShadersToDrawable("my cube", {"vs", "fs"});
 
     core.start();

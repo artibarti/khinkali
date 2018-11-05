@@ -59,16 +59,14 @@ namespace khinkali
 
             GLCamera camera;
             GLFWwindow* window;
+
+            GLdouble mouseX = -1.0, mouseY = -1.0;
     };
 
     GLScene::GLScene(int width, int height)
     {
         scene_width = width;
         scene_height = height;
-
-        addShader("vs", "shaders/default_vertex_shader.vs", GL_VERTEX_SHADER);
-        addShader("fs", "shaders/default_fragment_shader.fs", GL_FRAGMENT_SHADER);    
-
         camera = GLCamera(scene_width, scene_height);
     }
 
@@ -78,7 +76,6 @@ namespace khinkali
         glClearDepth(1.0);        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	    // glUniformMatrix4fv(UNIFORM_MODEL, 1, GL_FALSE, glm::value_ptr(modelMatrix));
     	glUniformMatrix4fv(UNIFORM_MODELVIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(camera.getModelViewProjectionMatrix()));
 
         for (auto drawable : drawables)
@@ -145,64 +142,45 @@ namespace khinkali
 
     void GLScene::keyPressed(GLint key, GLint scanCode, GLint action, GLint mods)
     {
-        bool needToRecalcViewMatrices = false;
-
         if (action == GLFW_PRESS || action == GLFW_REPEAT)
         {
             switch(key) 
             {
 
                 case GLFW_KEY_W:
-                    camera.setCamPosition ( camera.getCamPosition() + camera.getForward() * camera.getCamSpeed() );
-                    needToRecalcViewMatrices = true;
+                    camera.moveForward();
                     break;
             
                 case GLFW_KEY_S: 
-                    camera.setCamPosition ( camera.getCamPosition() - camera.getForward() * camera.getCamSpeed() ); 
-                    needToRecalcViewMatrices = true;
+                    camera.moveBack();
                     break;
             
                 case GLFW_KEY_A: 
-                    camera.setCamPosition ( camera.getCamPosition() - camera.getRight() * camera.getCamSpeed() ); 
-                    needToRecalcViewMatrices = true;
+                    camera.moveLeft();
                     break;
             
                 case GLFW_KEY_D: 
-                    camera.setCamPosition ( camera.getCamPosition() + camera.getRight() * camera.getCamSpeed() ); 
-                    needToRecalcViewMatrices = true;
-                    break;
-            
-                case GLFW_KEY_ESCAPE:
-                    // exit
-                    break;
+                    camera.moveRight();
+                    break;            
             }
-        }
-        
-        if (needToRecalcViewMatrices)
-            camera.initMatrices();        
-        glfwPollEvents();
+        }        
     }
 
     void GLScene::mouseMoved(GLdouble x, GLdouble y)
     {        
-        if (camera.getMouseX() == -1.0)
+        if (mouseX == -1.0)
         {
-            camera.setMouseX(x);
-            camera.setMouseY(y);
+            mouseX = x;
+            mouseY = y;
             return;
         }
         
-        GLdouble deltaX = x - camera.getMouseX();
-        GLdouble deltaY = y - camera.getMouseY();
-        
-        camera.setMouseX(x);
-        camera.setMouseY(y);
-        
-        //camera.setPitch( glm::clamp<GLfloat>(camera.getPitch() - deltaY * camera.getCamSpeed(), glm::radians(-89.0f), glm::radians(179.0f)) );
-        camera.setYaw( camera.getYaw() - deltaX * camera.getCamSpeed() );
-        
-        camera.initMatrices();        
-        glfwPollEvents();
+        GLdouble deltaX = x - mouseX;
+        GLdouble deltaY = y - mouseY;
+        mouseX = x;
+        mouseY = y;                
+
+        camera.turn(deltaX, deltaY);
     }
 
 

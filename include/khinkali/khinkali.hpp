@@ -8,6 +8,7 @@
 #include "utils/gllog.hpp"
 #include "utils/glconsts.hpp"
 #include "utils/glexcepion.hpp"
+#include "glwindow.hpp"
 #include "glcore.hpp"
 #include "glscene.hpp"
 #include "glshader.hpp"

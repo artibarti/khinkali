@@ -29,6 +29,7 @@ namespace khinkali
             void initIndexBuffer();
             void initNormalBuffer();
 
+            // destruct buffers
             void deleteBuffers();
 
             // vectors
@@ -36,14 +37,15 @@ namespace khinkali
             std::vector<glm::vec3> colors;
             std::vector<glm::vec3> normals;
             std::vector<GLuint> indices;
+            std::vector<glm::vec2> UVcoords;
             std::vector<std::string> shaders;
             
-            // opengl objects
-            GLuint vertex_buffer = 0, color_buffer = 0, index_buffer = 0, normal_buffer = 0;
+            // buffer objects and shader program
+            GLuint vertex_buffer, color_buffer, index_buffer, normal_buffer, uv_buffer;
             GLuint vertex_array = 0;
             GLuint program = 0; 
 
-            // non-user related info variables
+            // non user-related info variables
             GLDrawableType drawable_type;
             int draw_mode;
            
@@ -128,7 +130,7 @@ namespace khinkali
         glLinkProgram(program);
         glDeleteShader(shader);      
     }
-
+    
 }
 
 #endif

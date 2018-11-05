@@ -9,10 +9,9 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include "glscene.hpp"
 #include "utils/glexcepion.hpp"
-#include <thread>
 #include "glscene.hpp"
+#include "glwindow.hpp"
 
 namespace khinkali
 {
@@ -21,6 +20,7 @@ namespace khinkali
     {
         public:
             GLCore(int win_width, int win_height, const char* win_name = NULL);
+            
             void start();
             void terminate();
             void attachScene(int pos, GLScene* scene);
@@ -95,6 +95,11 @@ namespace khinkali
         }
     }
 
+    void GLCore::terminate()
+    {
+        glfwTerminate();
+    }
+
     void GLCore::attachScene(int pos, GLScene* scene)
     {
         scenes[pos] = scene;
@@ -113,6 +118,9 @@ namespace khinkali
 
     void GLCore::keyPressed(GLint key, GLint scanCode, GLint action, GLint mods)
     {
+        if ( key == GLFW_KEY_ESCAPE )
+            terminate();
+        
         for (auto scene : scenes)
             scene.second -> keyPressed(key, scanCode, action, mods);
     }

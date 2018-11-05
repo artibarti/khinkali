@@ -26,6 +26,9 @@ namespace khinkali
             float getCamSpeed();
             float getYaw();
             float getPitch();
+
+            glm::vec2 lookAtPosition;
+
             GLdouble getMouseX();
             GLdouble getMouseY();
 
@@ -35,6 +38,13 @@ namespace khinkali
             void setPitch(float pitch_);
             void setCamPosition(glm::vec3 pos);
 
+            void moveForward();
+            void moveBack();
+            void moveRight();
+            void moveLeft();
+
+            void turn(GLdouble dx, GLdouble dy);
+
         private:
             glm::vec3 forward;
             glm::vec3 right;
@@ -43,6 +53,8 @@ namespace khinkali
 
             float yaw, pitch;
             float speed;
+
+            glm::vec3 lookAt;
 
             GLdouble mouseX = -1;
             GLdouble mouseY = -1;
@@ -55,15 +67,8 @@ namespace khinkali
 
             int scene_width, scene_height;
     };
-
-    GLCamera::GLCamera()
-    {
-        cam_pos = glm::vec3(0.0f, 0.0f, 2.0f);
-
-        yaw = 0.0;
-        pitch = 0.0;
-        speed = 3.0;
-    }
+    
+    GLCamera::GLCamera() {}
 
     GLCamera::GLCamera(int width, int height)
     {
@@ -72,9 +77,6 @@ namespace khinkali
         yaw = 0.0;
         pitch = 0.0;
         speed = 0.01f;
-
-        static GLdouble mouseX = -1.0;
-        static GLdouble mouseY = -1.0;
 
         scene_width = width;
         scene_height = height;
@@ -168,6 +170,36 @@ namespace khinkali
         cam_pos = pos;
     }
 
+    void GLCamera::moveForward()
+    {
+        cam_pos += forward * speed;
+        initMatrices();
+    }
+
+    void GLCamera::moveBack()
+    {
+        cam_pos -= forward * speed;
+        initMatrices();
+    }
+
+    void GLCamera::moveRight()
+    {
+        cam_pos += right * speed;
+        initMatrices();
+    }
+
+    void GLCamera::moveLeft()
+    {
+        cam_pos -= right * speed;
+        initMatrices();
+    }
+
+    void GLCamera::turn(GLdouble dx, GLdouble dy)
+    {
+        pitch = glm::clamp<GLfloat>(pitch - dy * speed, glm::radians(-89.0f), glm::radians(179.0f));
+        yaw = yaw - dx * speed;
+        initMatrices();
+    }
 
 }
 

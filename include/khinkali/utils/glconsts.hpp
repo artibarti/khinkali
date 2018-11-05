@@ -13,6 +13,8 @@ namespace khinkali
     const glm::vec3 GL_COLOR_BLACK = {0.0, 0.0, 0.0};
     const glm::vec3 GL_COLOR_WHITE = {1.0, 1.0, 1.0};
     const glm::vec3 GL_COLOR_ORANGE = {0.9, 0.5, 0.0};
+    const glm::vec3 GL_COLOR_GREY = {0.5, 0.5, 0.5};
+    const glm::vec3 GL_COLOR_LIGHTBLUE = {0.2, 0.3, 1.0};
 
     std::map<GLDrawableType, int> vertexNumberConstraintForDrawables =
     {
