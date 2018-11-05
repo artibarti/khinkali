@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-namespace Lanuka
+namespace khinkali
 {
     void llog(std::string msg)
     {

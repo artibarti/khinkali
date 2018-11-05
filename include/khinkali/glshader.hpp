@@ -10,7 +10,7 @@
 #include "utils/gltypes.hpp"
 #include "utils/glutils.hpp"
 
-namespace Lanuka
+namespace khinkali
 {
 
     class GLShader
@@ -18,11 +18,12 @@ namespace Lanuka
         public:
             GLShader();
             GLShader(std::string filename_, int type_);
-            
+
             GLuint& getShader();
             std::string getFilename();
             int getShaderType();
             std::string getShaderCode();
+
 
         private:
             void compileShader();
@@ -32,6 +33,8 @@ namespace Lanuka
             int type;
             std::string shader_code;
             GLuint shader = 0;
+
+            GLchar compileLogBuffer[4098];
 
     };
 
@@ -80,6 +83,19 @@ namespace Lanuka
         const GLchar* shader_code_ptr[] = { shader_code.c_str() };
         glShaderSource(shader, 1, shader_code_ptr, NULL);
         glCompileShader(shader);
+
+        GLint status;
+	    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+
+	    if (status == GL_FALSE)
+	    {
+		    glGetShaderInfoLog(shader, sizeof(compileLogBuffer) / sizeof(GLchar), NULL, compileLogBuffer);
+            llog("Error occured during the compilation of shader: " + filename);
+            llog(compileLogBuffer);
+            memset(compileLogBuffer, 0, sizeof compileLogBuffer);
+            throw glShaderCompileException();
+	    }
+
     }
 
 };

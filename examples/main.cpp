@@ -1,13 +1,13 @@
 #include <iostream>
-#include "../include/lanuka/lanuka.hpp"
+#include "../include/khinkali/khinkali.hpp"
 
-using namespace Lanuka;
+using namespace khinkali;
 
 int main(int argc, char** argv)
 {
 
     GLCore core(640, 480, "Test window");
-    
+
     GLTriangle triangle
     (
         glm::vec2(-0.5, -0.5), 
@@ -28,22 +28,27 @@ int main(int argc, char** argv)
     (
         glm::vec2(0.7, 0.7),
         glm::vec2(0.7, -0.7),
-        glm::vec2(-0.7, 0.7),
-        glm::vec2(-0.7, -0.7)
+        glm::vec2(-0.7, 0.9),
+        glm::vec2(-0.7, -0.9)
     );
     rect.setColor(GL_COLOR_WHITE);
-        
-    GLScene2D scene("Test scene");
-    core.attachScene(&scene);
+
+    GLScene scene = GLScene(640,480);
+    core.attachScene(0, &scene);
     scene.setBackground(GL_COLOR_RED);
-    scene.addShape("my rect", &rect);
-    scene.addShape("my triangle", &triangle);
-    scene.addShape("my triangle2", &triangle2);
-    scene.addShader("vs", "shaders/vertex_shader.vs", GL_VERTEX_SHADER);
-    scene.addShader("fs", "shaders/fragment_shader.fs", GL_FRAGMENT_SHADER);
-    scene.attachShadersToShape("my triangle", {"vs", "fs"});
-    scene.attachShadersToShape("my triangle2", {"vs", "fs"});
-    scene.attachShadersToShape("my rect", {"vs", "fs"});
+    scene.addDrawable("my rect", &rect);
+    scene.addDrawable("my triangle", &triangle);
+    scene.addDrawable("my triangle2", &triangle2);
+
+    //scene.addShader("vs", "shaders/static_view_vertex_shader.vs", GL_VERTEX_SHADER);
+    //scene.addShader("fs", "shaders/static_view_fragment_shader.fs", GL_FRAGMENT_SHADER);
+    scene.addShader("vs", "shaders/default_vertex_shader.vs", GL_VERTEX_SHADER);
+    scene.addShader("fs", "shaders/default_fragment_shader.fs", GL_FRAGMENT_SHADER);
+
+    scene.attachShadersToDrawable("my triangle", {"vs", "fs"});
+    scene.attachShadersToDrawable("my triangle2", {"vs", "fs"});
+    scene.attachShadersToDrawable("my rect", {"vs", "fs"});
+
     core.start();
 
 }

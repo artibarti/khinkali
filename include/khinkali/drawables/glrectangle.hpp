@@ -1,12 +1,12 @@
 #ifndef GL_RECTAGLE_H
 #define GL_RECTAGLE_H
 
-#include "glshape.hpp"
+#include "gldrawable.hpp"
 
-namespace Lanuka
+namespace khinkali
 {
 
-    class GLRectangle : public GLShape
+    class GLRectangle : public GLDrawable
     {
         public:
             GLRectangle();
@@ -15,7 +15,9 @@ namespace Lanuka
 
     GLRectangle::GLRectangle(glm::vec2 v1, glm::vec2 v2, glm::vec2 v3, glm::vec2 v4)
     {
-        callMeBeforeAnythingInMyDerivedClasses();
+        glGenVertexArrays(1, &vertex_array);
+        glBindVertexArray(vertex_array);
+        program = glCreateProgram(); 
 
         draw_mode = GL_TRIANGLES;
         drawable_type = GL_DRAWABLE_TYPE_RECTANGLE;
@@ -27,8 +29,8 @@ namespace Lanuka
         initVertexBuffer();
 
         indices.push_back(0);
-        indices.push_back(1);
         indices.push_back(2);
+        indices.push_back(1);
         indices.push_back(3);
         indices.push_back(1);
         indices.push_back(2);

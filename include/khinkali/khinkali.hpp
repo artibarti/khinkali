@@ -1,5 +1,8 @@
-#ifndef LANUKA_H
-#define LANUKA_H
+#ifndef KHINKALI_H
+#define KHINKALI_H
+
+#define GLM_ENABLE_EXPERIMENTAL
+#define GLM_FORCE_RADIANS
 
 #include "utils/gltypes.hpp"
 #include "utils/gllog.hpp"
@@ -7,10 +10,9 @@
 #include "utils/glexcepion.hpp"
 #include "glcore.hpp"
 #include "glscene.hpp"
-#include "glscene2D.hpp"
 #include "glshader.hpp"
+#include "glcamera.hpp"
 #include "drawables/gldrawable.hpp"
-#include "drawables/glshape.hpp"
 #include "drawables/gltriangle.hpp"
 #include "drawables/glrectangle.hpp"
 

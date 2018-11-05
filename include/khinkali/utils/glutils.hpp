@@ -5,7 +5,7 @@
 #include <sstream>
 #include <fstream>
 
-namespace Lanuka
+namespace khinkali
 {
     std::string loadShaderFromFile(const std::string& filename)
     {

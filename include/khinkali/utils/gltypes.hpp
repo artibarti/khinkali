@@ -1,7 +1,7 @@
 #ifndef GL_TYPES_H
 #define GL_TYPES_H
 
-namespace Lanuka
+namespace khinkali
 {
     enum GLWindowType { GL_WINDOW_2D, GL_WINDOW_3D };
 

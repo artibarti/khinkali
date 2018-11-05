@@ -11,7 +11,7 @@
 #include "../utils/gllog.hpp"
 #include <algorithm>
 
-namespace Lanuka
+namespace khinkali
 {
     class GLDrawable
     {
@@ -21,10 +21,7 @@ namespace Lanuka
             void setColor(glm::vec3 color);
             void attachShader(GLuint& shader);
 
-
         protected:
-
-            void callMeBeforeAnythingInMyDerivedClasses();
 
             // buffer initialization
             void initVertexBuffer();
@@ -73,7 +70,7 @@ namespace Lanuka
         glGenBuffers(1, &vertex_buffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(VERTEX_ATTRIB_POS);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
         glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, 0,0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -84,7 +81,7 @@ namespace Lanuka
         glGenBuffers(1, &color_buffer);
         glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
         glBufferData(GL_ARRAY_BUFFER, colors.size()*sizeof(glm::vec3), &colors.front(), GL_STATIC_DRAW);
-        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(VERTEX_ATTRIB_COLOR);
         glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
         glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, 0,0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);        
@@ -96,13 +93,6 @@ namespace Lanuka
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
 	    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);        
-    }
-
-    void GLDrawable::callMeBeforeAnythingInMyDerivedClasses()
-    {
-        glGenVertexArrays(1, &vertex_array);
-        glBindVertexArray(vertex_array);
-        program = glCreateProgram();  
     }
 
     void GLDrawable::draw()
