@@ -10,6 +10,8 @@
 #include "../utils/glutils.hpp"
 #include "../utils/gllog.hpp"
 #include <algorithm>
+#include "../glshader.hpp"
+#include "../glshaderprogram.hpp"
 
 namespace khinkali
 {
@@ -19,7 +21,7 @@ namespace khinkali
             void draw();
             void setColor(double r, double g, double b);
             void setColor(glm::vec3 color);
-            void attachShader(GLuint& shader);
+            void attachProgram(GLShaderProgram *program_);
 
         protected:
 
@@ -29,21 +31,17 @@ namespace khinkali
             void initIndexBuffer();
             void initNormalBuffer();
 
-            // destruct buffers
-            void deleteBuffers();
-
             // vectors
             std::vector<glm::vec3> vertices;
             std::vector<glm::vec3> colors;
             std::vector<glm::vec3> normals;
             std::vector<GLuint> indices;
             std::vector<glm::vec2> UVcoords;
-            std::vector<std::string> shaders;
             
             // buffer objects and shader program
             GLuint vertex_buffer, color_buffer, index_buffer, normal_buffer, uv_buffer;
             GLuint vertex_array = 0;
-            GLuint program = 0; 
+            GLuint* program; 
 
             // non user-related info variables
             GLDrawableType drawable_type;
@@ -107,10 +105,9 @@ namespace khinkali
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-
     void GLDrawable::draw()
     {
-        glUseProgram(program);
+        glUseProgram(*program);
         glBindVertexArray(vertex_array);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
         glDrawElements(draw_mode, indices.size(), GL_UNSIGNED_INT, 0);
@@ -118,17 +115,9 @@ namespace khinkali
         glBindVertexArray(0);
     }
 
-    void GLDrawable::deleteBuffers()
+    void GLDrawable::attachProgram(GLShaderProgram *program_)
     {
-        glDeleteBuffers(1, &vertex_buffer);
-        glDeleteBuffers(1, &color_buffer);
-    }
-
-    void GLDrawable::attachShader(GLuint& shader)
-    {
-        glAttachShader(program, shader);
-        glLinkProgram(program);
-        glDeleteShader(shader);      
+        program = &(program_ -> getProgram());
     }
     
 }

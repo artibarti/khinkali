@@ -17,10 +17,10 @@
 
 #include "utils/gltypes.hpp"
 #include "utils/gllog.hpp"
-#include "glshader.hpp"
 #include "utils/glexcepion.hpp"
 #include "drawables/gldrawable.hpp"
 #include "glcamera.hpp"
+#include "glshaderprogram.hpp"
 
 namespace khinkali
 {
@@ -34,33 +34,24 @@ namespace khinkali
             void setBackground(double r, double g, double b);
             void setSize(int width, int height);
             void addDrawable(std::string tag, GLDrawable* drawable);
-            void addShader(std::string tag, std::string filename, int type);
-            void attachShaderToDrawable(std::string shape, std::string shader);
-            void attachShadersToDrawable(std::string shape, std::initializer_list<std::string>);
-            void showInfo() const;
-            void draw();
-
+            void attachProgram(GLShaderProgram *program);
             void keyPressed(GLint key, GLint scanCode, GLint action, GLint mods);
             void mouseMoved(GLdouble x, GLdouble y);
+            void draw();
+
+            void showInfo() const;
 
         private:
 
             std::map<std::string, GLShader*> shaders;
             std::map<std::string, GLDrawable*> drawables;
-            glm::vec3 backgroundColor;   
 
             int scene_width = 0;
             int scene_height = 0;
-
-            glm::mat4 modelMatrix;
-            glm::mat4 viewMatrix;
-            glm::mat4 projectionMatrix;
-            glm::mat4 viewProjectionMatrix;
+            glm::vec3 backgroundColor;   
+            GLdouble mouseX = -1.0, mouseY = -1.0;
 
             GLCamera camera;
-            GLFWwindow* window;
-
-            GLdouble mouseX = -1.0, mouseY = -1.0;
     };
 
     GLScene::GLScene(int width, int height)
@@ -68,18 +59,6 @@ namespace khinkali
         scene_width = width;
         scene_height = height;
         camera = GLCamera(scene_width, scene_height);
-    }
-
-    void GLScene::draw()
-    {
-        glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0);
-        glClearDepth(1.0);        
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    	glUniformMatrix4fv(UNIFORM_MODELVIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(camera.getModelViewProjectionMatrix()));
-
-        for (auto drawable : drawables)
-            drawable.second -> draw();
     }
 
     void GLScene::setBackground(glm::vec3 color)
@@ -94,10 +73,10 @@ namespace khinkali
         backgroundColor[2] = b;
     }
 
-    void GLScene::addShader(std::string tag, std::string filename, int type)
+    void GLScene::setSize(int width, int height)
     {
-        GLShader *shader = new GLShader(filename, type);
-        shaders[tag] = shader;
+        scene_width = width;
+        scene_height = height;
     }
 
     void GLScene::addDrawable(std::string tag, GLDrawable* drawable)
@@ -109,35 +88,23 @@ namespace khinkali
             drawables[tag] = drawable;
     }
 
-    void GLScene::showInfo() const
+    void GLScene::draw()
     {
-        std::cout << "GLScene object" << std::endl;
-        std::cout << "Contains " << drawables.size() << " drawables" << std::endl;
-        std::cout << shaders.size() << " shaders loaded for this scene" << std::endl;
-        std::cout << std::endl;
-    }
+        glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0);
+        glClearDepth(1.0);        
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    void GLScene::attachShaderToDrawable(std::string drawable, std::string shader)
-    {
-        auto search = shaders.find(shader);
-        if (search != shaders.end())
-            drawables[drawable] -> attachShader(shaders[shader] -> getShader());
-        else
-            throw glShaderNotLoadedForSceneException();
-    }
-    
-    void GLScene::attachShadersToDrawable(std::string shape, std::initializer_list<std::string> il)
-    {
-        for (auto shader_name : il)
+        for (auto drawable : drawables)
         {
-            attachShaderToDrawable(shape, shader_name);
+        	glUniformMatrix4fv(UNIFORM_MODELVIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(camera.getModelViewProjectionMatrix()));
+            drawable.second -> draw();
         }
     }
 
-    void GLScene::setSize(int width, int height)
+    void GLScene::attachProgram(GLShaderProgram *program)
     {
-        scene_width = width;
-        scene_height = height;
+        for (auto drawable : drawables)
+            drawable.second -> attachProgram(program);
     }
 
     void GLScene::keyPressed(GLint key, GLint scanCode, GLint action, GLint mods)
@@ -183,6 +150,11 @@ namespace khinkali
         camera.turn(deltaX, deltaY);
     }
 
+    void GLScene::showInfo() const
+    {
+        std::cout << "GLScene object" << std::endl;
+        std::cout << "Contains " << drawables.size() << " drawables" << std::endl;
+    }
 
 }
 

@@ -16,21 +16,10 @@ namespace khinkali
             GLTriangle(glm::vec2 v1, glm::vec2 v2, glm::vec2 v3);
     };
 
-    GLTriangle::GLTriangle()
-    {   
-        glGenVertexArrays(1, &vertex_array);
-        glBindVertexArray(vertex_array);
-        program = glCreateProgram(); 
-        
-        draw_mode = GL_TRIANGLES;
-        drawable_type = GL_DRAWABLE_TYPE_TRIANGLE;
-    }
-
     GLTriangle::GLTriangle(glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
     {
         glGenVertexArrays(1, &vertex_array);
         glBindVertexArray(vertex_array);
-        program = glCreateProgram(); 
 
         draw_mode = GL_TRIANGLES;
         drawable_type = GL_DRAWABLE_TYPE_TRIANGLE;

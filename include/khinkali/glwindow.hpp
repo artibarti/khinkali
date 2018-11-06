@@ -5,17 +5,18 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <iostream>
+#include <functional>
+#include "utils/gllog.hpp"
 
 namespace khinkali
 {
+ 
     class GLWindow
     {
         public:
-            GLWindow(int width, int height, const char* title = "Unnamed window");
+            GLWindow() {};
+            GLWindow(int width, int height, const char* title);
             GLFWwindow* getWindow();
-
-            void setKeyCallbackFunction(void (*keyCallback_)(int, int, int, int));
-            void setMouseCallbackFunction(void (*mouseCallback_)(GLdouble, GLdouble));
 
         private:
             GLFWwindow* window;
@@ -24,13 +25,8 @@ namespace khinkali
             bool resizeable = false;
             std::string window_title;
 
-            static void keyPressedEventCatcher(GLFWwindow* window, int key, int scancode, int actions, int mods);
-            static void mouseMovedEventCatcher(GLFWwindow* window, GLdouble x, GLdouble y);
-            void (*keyCallback)(int, int, int, int);
-            void (*mouseCallback)(GLdouble, GLdouble);
-
     };
-    
+
     GLWindow::GLWindow(int width, int height, const char* title)
     {
         if (!glfwInit())
@@ -49,15 +45,11 @@ namespace khinkali
         {
             glfwTerminate();
             return;
+
         }
 
 	    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
         glfwMakeContextCurrent(window);
-
-        glfwSetWindowUserPointer(window, this);
-
-	    glfwSetKeyCallback(window, keyPressedEventCatcher);
-	    glfwSetCursorPosCallback(window, mouseMovedEventCatcher);
     	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
@@ -65,31 +57,7 @@ namespace khinkali
     {
         return window;
     }
-
-    void GLWindow::keyPressedEventCatcher(GLFWwindow* window, int key, int scancode, int actions, int mods)
-    {
-        GLWindow* w = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
-        w -> keyCallback(key, scancode, actions, mods);
-        glfwPollEvents();
-    }
-
-    void GLWindow::mouseMovedEventCatcher(GLFWwindow* window, GLdouble x, GLdouble y)
-    {
-        GLWindow* w = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
-        w -> mouseCallback(x,y) ;
-        glfwPollEvents();
-    }
-
-    void GLWindow::setKeyCallbackFunction(void (*keyCallback_)(int, int, int, int))
-    {
-        keyCallback = keyCallback_;
-    }
-
-    void GLWindow::setMouseCallbackFunction(void (*mouseCallback_)(GLdouble, GLdouble))
-    {
-        mouseCallback = mouseCallback_;
-    }
-
+        
 }
 
 #endif

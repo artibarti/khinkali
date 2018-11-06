@@ -17,7 +17,6 @@ namespace khinkali
     {
         glGenVertexArrays(1, &vertex_array);
         glBindVertexArray(vertex_array);
-        program = glCreateProgram(); 
 
         draw_mode = GL_TRIANGLES;
         drawable_type = GL_DRAWABLE_TYPE_RECTANGLE;

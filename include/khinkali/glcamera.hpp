@@ -72,7 +72,7 @@ namespace khinkali
 
     GLCamera::GLCamera(int width, int height)
     {
-        cam_pos = glm::vec3(0.0f, 0.0f, 2.0f);
+        cam_pos = glm::vec3(0.0f, 0.0f, 0.0f);
 
         yaw = 0.0;
         pitch = 0.0;
@@ -94,7 +94,7 @@ namespace khinkali
         forward = glm::vec3(rotation * forward_);
 	    right = glm::vec3(rotation * right_);
 
-    	modelMatrix = glm::rotate(glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    	modelMatrix = glm::rotate(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         viewMatrix = glm::lookAt(cam_pos, cam_pos + forward, glm::vec3(0.0f, 1.0f, 0.0f));
         projectionMatrix = glm::perspective(glm::radians(65.0f), GLfloat(scene_width)/GLfloat(scene_height), 0.001f, 1000.0f);
         modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix;

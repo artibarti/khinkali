@@ -17,20 +17,19 @@ namespace khinkali
     {
         public:
             GLShader();
-            GLShader(std::string filename_, int type_);
+            GLShader(std::string filename_, GLint type_);
 
             GLuint& getShader();
             std::string getFilename();
             int getShaderType();
             std::string getShaderCode();
 
-
         private:
             void compileShader();
             void loadShaderCode();
 
             std::string filename;
-            int type;
+            GLint type;
             std::string shader_code;
             GLuint shader = 0;
 
@@ -43,7 +42,7 @@ namespace khinkali
 
     }
 
-    GLShader::GLShader(std::string filename_, int type_)
+    GLShader::GLShader(std::string filename_, GLint type_)
     {
         filename = filename_;
         type = type_;
@@ -95,9 +94,7 @@ namespace khinkali
             memset(compileLogBuffer, 0, sizeof compileLogBuffer);
             throw glShaderCompileException();
 	    }
-
     }
-
-};
+}
 
 #endif

@@ -9,17 +9,19 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <functional>
 #include "utils/glexcepion.hpp"
 #include "glscene.hpp"
 #include "glwindow.hpp"
 
 namespace khinkali
 {
-
     class GLCore
     {
         public:
-            GLCore(int win_width, int win_height, const char* win_name = NULL);
+            GLCore(int win_width, int win_height, const char* win_name);
             
             void start();
             void terminate();
@@ -27,8 +29,11 @@ namespace khinkali
             void detachScene(int pos);
             void showInfo();
         
+            void keyPressedEventBroadcaster(int key, int scancode, int actions, int mods);
+            void mouseMovedEventBroadcaster(GLdouble x, GLdouble y);
+
         private:
-            GLFWwindow* window;
+            GLWindow window;
             std::map<int, GLScene*> scenes;
             std::string window_name = "Unnamed window";
             int window_width = 0;
@@ -37,31 +42,19 @@ namespace khinkali
             static void keyPressedEventCatcher(GLFWwindow* window, int key, int scancode, int actions, int mods);
             static void mouseMovedEventCatcher(GLFWwindow* window, GLdouble x, GLdouble y);
 
-            void keyPressed(GLint key, GLint scanCode, GLint action, GLint mods);
-            void mouseMoved(GLdouble x, GLdouble y);
     };
 
     GLCore::GLCore(int win_width, int win_height, const char* win_name)
     {
         if (!glfwInit())
             return;
+
+        window = GLWindow(win_width, win_height, win_name);
         
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwSetWindowUserPointer(window.getWindow(), this);
+	    glfwSetKeyCallback(window.getWindow(), keyPressedEventCatcher);
+	    glfwSetCursorPosCallback(window.getWindow(), mouseMovedEventCatcher);
 
-        window_name = win_name;
-
-        window = glfwCreateWindow(640, 480, win_name, NULL, NULL);
-        if (!window)
-        {
-            glfwTerminate();
-            return;
-        }
-
-	    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-        glfwMakeContextCurrent(window);
         glewExperimental = GL_TRUE;
         if (glewInit() != GLEW_OK)
         {
@@ -69,29 +62,20 @@ namespace khinkali
                 return;
         }
 
-        glfwMakeContextCurrent(window);
-
-        window_width = win_width;
-        window_height = win_height;
-        window_name = win_name;
-
-	    glfwSetWindowUserPointer(window, this);
-
-	    glfwSetKeyCallback(window, keyPressedEventCatcher);
-	    glfwSetCursorPosCallback(window, mouseMovedEventCatcher);
-    	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glEnable(GL_CULL_FACE);
+	    glEnable(GL_DEPTH_TEST);        
     }
 
     void GLCore::start()
     {
-        while (!glfwWindowShouldClose(window))	
+        while (!glfwWindowShouldClose( window.getWindow() ))	
         {
             glfwPollEvents();
 
             for (auto scene : scenes)
                 scene.second -> draw();
 
-            glfwSwapBuffers(window);
+            glfwSwapBuffers(window.getWindow());
         }
     }
 
@@ -116,7 +100,7 @@ namespace khinkali
         std::cout << std::endl;
     }
 
-    void GLCore::keyPressed(GLint key, GLint scanCode, GLint action, GLint mods)
+    void GLCore::keyPressedEventBroadcaster(GLint key, GLint scanCode, GLint action, GLint mods)
     {
         if ( key == GLFW_KEY_ESCAPE )
             terminate();
@@ -125,7 +109,7 @@ namespace khinkali
             scene.second -> keyPressed(key, scanCode, action, mods);
     }
 
-    void GLCore::mouseMoved(GLdouble x, GLdouble y)
+    void GLCore::mouseMovedEventBroadcaster(GLdouble x, GLdouble y)
     {
         for (auto scene : scenes)
             scene.second -> mouseMoved(x,y);
@@ -134,14 +118,14 @@ namespace khinkali
     void GLCore::keyPressedEventCatcher(GLFWwindow* window, int key, int scancode, int actions, int mods)
     {
         GLCore* core = static_cast<GLCore*>(glfwGetWindowUserPointer(window));
-        core -> keyPressed(key, scancode, actions, mods);
+        core -> keyPressedEventBroadcaster(key, scancode, actions, mods);
         glfwPollEvents();
     }
 
     void GLCore::mouseMovedEventCatcher(GLFWwindow* window, GLdouble x, GLdouble y)
     {
         GLCore* core = static_cast<GLCore*>(glfwGetWindowUserPointer(window));
-        core -> mouseMoved(x,y);
+        core -> mouseMovedEventBroadcaster(x,y) ;
         glfwPollEvents();
     }
 

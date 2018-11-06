@@ -11,6 +11,7 @@
 #include "glwindow.hpp"
 #include "glcore.hpp"
 #include "glscene.hpp"
+#include "glshaderprogram.hpp"
 #include "glshader.hpp"
 #include "glcamera.hpp"
 #include "drawables/gldrawable.hpp"

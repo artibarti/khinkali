@@ -18,6 +18,10 @@ namespace khinkali
             is << fs.rdbuf();
             result = is.str();
         }
+        else
+        {
+            throw glShaderLoadException();
+        }
 
         return result;
     }

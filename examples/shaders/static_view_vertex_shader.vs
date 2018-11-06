@@ -1,7 +1,6 @@
 #version 430
 
 #define UNIFORM_MODELVIEWPROJECTION 0
-
 #define VERTEX_ATTRIB_POS    0
 #define VERTEX_ATTRIB_COLOR  1
 
