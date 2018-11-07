@@ -25,7 +25,8 @@ namespace khinkali
             glm::vec3 getCamPosition();
             glm::vec3 getForward();
             glm::vec3 getRight();
-            float getCamSpeed();
+            float getCamRotateSpeed();
+            float getCamMoveSpeed();
             float getYaw();
             float getPitch();
 
@@ -54,7 +55,8 @@ namespace khinkali
             glm::mat4 rotation;
 
             float yaw, pitch;
-            float speed;
+            float rotate_speed;
+            float move_speed;
 
             glm::vec3 lookAt;
 
@@ -79,7 +81,8 @@ namespace khinkali
 
         yaw = 0.0;
         pitch = 0.0;
-        speed = 0.01f;
+        rotate_speed = 0.01f;
+        move_speed = 0.05f;
 
         scene_width = width;
         scene_height = height;
@@ -129,9 +132,14 @@ namespace khinkali
         return right;
     }
 
-    float GLCamera::getCamSpeed()
+    float GLCamera::getCamRotateSpeed()
     {
-        return speed;
+        return rotate_speed;
+    }
+
+    float GLCamera::getCamMoveSpeed()
+    {
+        return move_speed;
     }
 
     float GLCamera::getYaw()
@@ -181,32 +189,32 @@ namespace khinkali
 
     void GLCamera::moveForward()
     {
-        cam_pos += forward * speed;
+        cam_pos += forward * move_speed;
         initMatrices();
     }
 
     void GLCamera::moveBack()
     {
-        cam_pos -= forward * speed;
+        cam_pos -= forward * move_speed;
         initMatrices();
     }
 
     void GLCamera::moveRight()
     {
-        cam_pos += right * speed;
+        cam_pos += right * move_speed;
         initMatrices();
     }
 
     void GLCamera::moveLeft()
     {
-        cam_pos -= right * speed;
+        cam_pos -= right * move_speed;
         initMatrices();
     }
 
     void GLCamera::turn(GLdouble dx, GLdouble dy)
     {
-        pitch = glm::clamp<GLfloat>(pitch - dy * speed, glm::radians(-89.0f), glm::radians(179.0f));
-        yaw = yaw - dx * speed;
+        pitch = glm::clamp<GLfloat>(pitch - dy * rotate_speed, glm::radians(-89.0f), glm::radians(179.0f));
+        yaw = yaw - dx * rotate_speed;
         initMatrices();
     }
 
