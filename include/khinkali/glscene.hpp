@@ -29,11 +29,11 @@ namespace khinkali
         public:
             
             GLScene(int width, int height);
-            
+
             void setBackground(glm::vec3 color);
             void setBackground(double r, double g, double b);
             void setSize(int width, int height);
-            void addDrawable(std::string tag, GLDrawable* drawable);
+            void attachDrawable(GLDrawable* drawable);
             void attachProgram(GLShaderProgram *program);
             void keyPressed(GLint key, GLint scanCode, GLint action, GLint mods);
             void mouseMoved(GLdouble x, GLdouble y);
@@ -43,8 +43,7 @@ namespace khinkali
 
         private:
 
-            std::map<std::string, GLShader*> shaders;
-            std::map<std::string, GLDrawable*> drawables;
+            std::vector<GLDrawable*> drawables;
 
             int scene_width = 0;
             int scene_height = 0;
@@ -79,13 +78,9 @@ namespace khinkali
         scene_height = height;
     }
 
-    void GLScene::addDrawable(std::string tag, GLDrawable* drawable)
+    void GLScene::attachDrawable(GLDrawable* drawable)
     {
-        auto search = drawables.find(tag);
-        if (search != drawables.end())
-            throw glDuplicatedObjectNameException();
-        else
-            drawables[tag] = drawable;
+        drawables.push_back(drawable);
     }
 
     void GLScene::draw()
@@ -98,14 +93,14 @@ namespace khinkali
         {
         	glUniformMatrix4fv(UNIFORM_MODELVIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(camera.getModelViewProjectionMatrix()));
         	glUniformMatrix4fv(UNIFORM_NORMAL, 1, GL_FALSE, glm::value_ptr(camera.getNormalMatrix()));
-            drawable.second -> draw();
+            drawable -> draw();
         }
     }
 
     void GLScene::attachProgram(GLShaderProgram *program)
     {
         for (auto drawable : drawables)
-            drawable.second -> attachProgram(program);
+            drawable -> attachProgram(program);
     }
 
     void GLScene::keyPressed(GLint key, GLint scanCode, GLint action, GLint mods)

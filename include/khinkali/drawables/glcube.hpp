@@ -91,8 +91,6 @@ namespace khinkali
 			for (size_t j = 0; j < faceIndices.size(); ++j)
 				indices.push_back(faceIndices[j] + i * 4);
 
-		initTexture();
-
 		initVertexBuffer();
 		initUVbuffer();
 		initNormalBuffer();

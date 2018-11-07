@@ -1,6 +1,6 @@
 
-#ifndef GL_CORE2D_H
-#define GL_CORE2D_H
+#ifndef GL_CORE_H
+#define GL_CORE_H
 
 #define GLEW_STATIC
 
@@ -68,19 +68,26 @@ namespace khinkali
 
     void GLCore::start()
     {
-        while (!glfwWindowShouldClose( window.getWindow() ))	
-        {
+        while (true)	
+        {                
             glfwPollEvents();
 
             for (auto scene : scenes)
                 scene.second -> draw();
 
             glfwSwapBuffers(window.getWindow());
+
+            if (glfwWindowShouldClose( window.getWindow() ))
+            {
+                terminate();
+                break;
+            }
         }
     }
 
     void GLCore::terminate()
     {
+        window.destroy();
         glfwTerminate();
     }
 
@@ -102,9 +109,10 @@ namespace khinkali
 
     void GLCore::keyPressedEventBroadcaster(GLint key, GLint scanCode, GLint action, GLint mods)
     {
-        if ( key == GLFW_KEY_ESCAPE )
-            terminate();
         
+        if ( key == GLFW_KEY_ESCAPE )
+            glfwSetWindowShouldClose(window.getWindow(), true);
+
         for (auto scene : scenes)
             scene.second -> keyPressed(key, scanCode, action, mods);
     }
@@ -119,14 +127,12 @@ namespace khinkali
     {
         GLCore* core = static_cast<GLCore*>(glfwGetWindowUserPointer(window));
         core -> keyPressedEventBroadcaster(key, scancode, actions, mods);
-        glfwPollEvents();
     }
 
     void GLCore::mouseMovedEventCatcher(GLFWwindow* window, GLdouble x, GLdouble y)
     {
         GLCore* core = static_cast<GLCore*>(glfwGetWindowUserPointer(window));
         core -> mouseMovedEventBroadcaster(x,y) ;
-        glfwPollEvents();
     }
 
 };

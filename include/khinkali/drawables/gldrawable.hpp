@@ -3,7 +3,6 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#define STB_IMAGE_IMPLEMENTATION
 #include "../thirdparty/stb_image.h"
 #include "../utils/gltypes.hpp"
 #include <glm/vec2.hpp>
@@ -14,6 +13,7 @@
 #include <algorithm>
 #include "../glshader.hpp"
 #include "../glshaderprogram.hpp"
+#include "../gltexture.hpp"
 
 namespace khinkali
 {
@@ -24,6 +24,7 @@ namespace khinkali
             void setColor(double r, double g, double b);
             void setColor(glm::vec3 color);
             void attachProgram(GLShaderProgram *program_);
+            void attachTexture(GLTexture* texture_);
 
         protected:
 
@@ -35,6 +36,7 @@ namespace khinkali
             void initUVbuffer();
 
             // texture
+            GLTexture* texture;
             void initTexture();
 
             // vectors
@@ -47,7 +49,6 @@ namespace khinkali
             // buffer objects and shader program
             GLuint vertex_buffer, color_buffer, index_buffer, normal_buffer, uv_buffer;
             GLuint vertex_array = 0;
-            GLuint texture;
             GLuint* program; 
 
             // non user-related info variables
@@ -132,30 +133,9 @@ namespace khinkali
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);        
     }
 
-    void GLDrawable::initTexture()
-    {
-	    int x, y, n;
-	    auto image = stbi_load("bricks.jpg", &x, &y, &n, 4);
-
-	    GLfloat maxAnisotropy;
-	    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
-
-        glGenTextures(1, &texture);
-	    glBindTexture(GL_TEXTURE_2D, texture);
-	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
-	    glGenerateMipmap(GL_TEXTURE_2D);
-	    glBindTexture(GL_TEXTURE_2D, 0);
-        stbi_image_free(image);
-    }
-
     void GLDrawable::draw()
     {
-    	glActiveTexture(GL_TEXTURE0);    
-    	glBindTexture(GL_TEXTURE_2D, texture);
-
+        texture -> activate();
         glUseProgram(*program);
         glBindVertexArray(vertex_array);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
@@ -168,7 +148,11 @@ namespace khinkali
     {
         program = &(program_ -> getProgram());
     }
-    
+
+    void GLDrawable::attachTexture(GLTexture* texture_)
+    {
+        texture = texture_;
+    }
 }
 
 #endif

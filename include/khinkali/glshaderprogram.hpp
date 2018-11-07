@@ -15,6 +15,7 @@ namespace khinkali
     {
         public:
             GLShaderProgram();
+            ~GLShaderProgram();
             GLuint& getProgram();
             void attachShader(int pos, std::string filename, GLint type);            
 
@@ -29,6 +30,11 @@ namespace khinkali
     GLShaderProgram::GLShaderProgram()
     {
         program = glCreateProgram();
+    }
+
+    GLShaderProgram::~GLShaderProgram()
+    {
+        glDeleteProgram(program);
     }
 
     GLuint& GLShaderProgram::getProgram()

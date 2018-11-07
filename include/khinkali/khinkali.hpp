@@ -13,6 +13,7 @@
 #include "glscene.hpp"
 #include "glshaderprogram.hpp"
 #include "glshader.hpp"
+#include "gltexture.hpp"
 #include "glcamera.hpp"
 #include "drawables/gldrawable.hpp"
 #include "drawables/gltriangle.hpp"

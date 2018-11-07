@@ -17,6 +17,7 @@ namespace khinkali
             GLWindow() {};
             GLWindow(int width, int height, const char* title);
             GLFWwindow* getWindow();
+            void destroy();
 
         private:
             GLFWwindow* window;
@@ -57,7 +58,11 @@ namespace khinkali
     {
         return window;
     }
-        
+
+    void GLWindow::destroy()
+    {
+        glfwDestroyWindow(window);
+    }
 }
 
 #endif
