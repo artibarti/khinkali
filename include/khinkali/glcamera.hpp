@@ -7,6 +7,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_inverse.hpp"
 #include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
 
@@ -18,6 +19,7 @@ namespace khinkali
             GLCamera();
             GLCamera(int width, int height);
             glm::mat4 getModelViewProjectionMatrix();
+            glm::mat4 getNormalMatrix();
             void initMatrices();
 
             glm::vec3 getCamPosition();
@@ -64,6 +66,7 @@ namespace khinkali
             glm::mat4 projectionMatrix;
             glm::mat4 viewProjectionMatrix;
             glm::mat4 modelViewProjectionMatrix;
+            glm::mat4 normalMatrix;
 
             int scene_width, scene_height;
     };
@@ -72,7 +75,7 @@ namespace khinkali
 
     GLCamera::GLCamera(int width, int height)
     {
-        cam_pos = glm::vec3(0.0f, 0.0f, 0.0f);
+        cam_pos = glm::vec3(0.0f, 3.0f, 5.0f);
 
         yaw = 0.0;
         pitch = 0.0;
@@ -98,11 +101,17 @@ namespace khinkali
         viewMatrix = glm::lookAt(cam_pos, cam_pos + forward, glm::vec3(0.0f, 1.0f, 0.0f));
         projectionMatrix = glm::perspective(glm::radians(65.0f), GLfloat(scene_width)/GLfloat(scene_height), 0.001f, 1000.0f);
         modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix;
+    	normalMatrix = glm::inverseTranspose(modelMatrix);
     }
 
     glm::mat4 GLCamera::getModelViewProjectionMatrix()
     {
         return modelViewProjectionMatrix;
+    }
+
+    glm::mat4 GLCamera::getNormalMatrix()
+    {
+        return normalMatrix;
     }
 
     glm::vec3 GLCamera::getCamPosition()

@@ -97,6 +97,7 @@ namespace khinkali
         for (auto drawable : drawables)
         {
         	glUniformMatrix4fv(UNIFORM_MODELVIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(camera.getModelViewProjectionMatrix()));
+        	glUniformMatrix4fv(UNIFORM_NORMAL, 1, GL_FALSE, glm::value_ptr(camera.getNormalMatrix()));
             drawable.second -> draw();
         }
     }

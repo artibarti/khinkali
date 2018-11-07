@@ -2,7 +2,7 @@
 
 #define UNIFORM_MODELVIEWPROJECTION 0
 #define VERTEX_ATTRIB_POS    0
-#define VERTEX_ATTRIB_COLOR  1
+#define VERTEX_ATTRIB_COLOR  3
 
 layout (location = UNIFORM_MODELVIEWPROJECTION) uniform mat4 mModelViewProjection;
 layout (location = VERTEX_ATTRIB_POS) in vec3 vPos;

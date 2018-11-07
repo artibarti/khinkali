@@ -3,6 +3,8 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "../thirdparty/stb_image.h"
 #include "../utils/gltypes.hpp"
 #include <glm/vec2.hpp>
 #include <vector>
@@ -30,6 +32,10 @@ namespace khinkali
             void initColorBuffer();
             void initIndexBuffer();
             void initNormalBuffer();
+            void initUVbuffer();
+
+            // texture
+            void initTexture();
 
             // vectors
             std::vector<glm::vec3> vertices;
@@ -41,6 +47,7 @@ namespace khinkali
             // buffer objects and shader program
             GLuint vertex_buffer, color_buffer, index_buffer, normal_buffer, uv_buffer;
             GLuint vertex_array = 0;
+            GLuint texture;
             GLuint* program; 
 
             // non user-related info variables
@@ -72,9 +79,10 @@ namespace khinkali
         glGenBuffers(1, &vertex_buffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
+        
         glEnableVertexAttribArray(VERTEX_ATTRIB_POS);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-        glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, 0,0);
+        glVertexAttribPointer(VERTEX_ATTRIB_POS,3,GL_FLOAT, GL_FALSE, 0,0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
@@ -83,10 +91,37 @@ namespace khinkali
         glGenBuffers(1, &color_buffer);
         glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
         glBufferData(GL_ARRAY_BUFFER, colors.size()*sizeof(glm::vec3), &colors.front(), GL_STATIC_DRAW);
+        
         glEnableVertexAttribArray(VERTEX_ATTRIB_COLOR);
         glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
-        glVertexAttribPointer(1,3, GL_FLOAT, GL_FALSE, 0,0);
+        glVertexAttribPointer(VERTEX_ATTRIB_COLOR,3, GL_FLOAT, GL_FALSE, 0,0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);        
+    }
+
+    void GLDrawable::initNormalBuffer()
+    {
+        glGenBuffers(1, &normal_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
+        glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glEnableVertexAttribArray(VERTEX_ATTRIB_NORMAL);
+        glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
+        glVertexAttribPointer(VERTEX_ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    void GLDrawable::initUVbuffer()
+    {
+        glGenBuffers(1, &uv_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, uv_buffer);
+        glBufferData(GL_ARRAY_BUFFER, UVcoords.size() * sizeof(glm::vec2), UVcoords.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glEnableVertexAttribArray(VERTEX_ATTRIB_UV);
+	    glBindBuffer(GL_ARRAY_BUFFER, uv_buffer);
+	    glVertexAttribPointer(VERTEX_ATTRIB_UV, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	    glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     void GLDrawable::initIndexBuffer()
@@ -97,16 +132,30 @@ namespace khinkali
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);        
     }
 
-    void GLDrawable::initNormalBuffer()
+    void GLDrawable::initTexture()
     {
-        glGenBuffers(1, &normal_buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
-        glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+	    int x, y, n;
+	    auto image = stbi_load("bricks.jpg", &x, &y, &n, 4);
+
+	    GLfloat maxAnisotropy;
+	    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+
+        glGenTextures(1, &texture);
+	    glBindTexture(GL_TEXTURE_2D, texture);
+	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
+	    glGenerateMipmap(GL_TEXTURE_2D);
+	    glBindTexture(GL_TEXTURE_2D, 0);
+        stbi_image_free(image);
     }
 
     void GLDrawable::draw()
     {
+    	glActiveTexture(GL_TEXTURE0);    
+    	glBindTexture(GL_TEXTURE_2D, texture);
+
         glUseProgram(*program);
         glBindVertexArray(vertex_array);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);

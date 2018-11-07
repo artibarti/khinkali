@@ -25,7 +25,7 @@ namespace khinkali
         draw_mode = GL_TRIANGLES;
         drawable_type = GL_DRAWABLE_TYPE_CUBE;
 
-        vertices = 
+        std::vector<glm::vec3> tmp_vertices = 
         {
 	        glm::vec3(center[0] - size/2, center[1] - size/2,  center[2] + size/2),
 	        glm::vec3(center[0] + size/2, center[1] - size/2,  center[2] + size/2),
@@ -36,59 +36,67 @@ namespace khinkali
 	        glm::vec3(center[0] - size/2, center[1] + size/2,  center[2] - size/2),
 	        glm::vec3(center[0] + size/2, center[1] + size/2,  center[2] - size/2)
         };
-        initVertexBuffer();
 
-        indices =
-        {
-        	// front
-        	0, 1, 4,
-        	4, 1, 5,
-        	// right
-        	5, 1, 7,
-        	7, 1, 3, 
-        	// back
-        	3, 2, 7,
-        	7, 2, 6, 
-        	// left
-        	2, 4, 6,
-        	4, 2, 0, 
-        	// bottom
-        	2, 1, 0,
-        	1, 2, 3, 
-        	// top
-        	6, 4, 7,
-        	7, 4, 5, 
-        };
-        initIndexBuffer();
+		std::vector<glm::vec3> tmp_normals=
+		{
+			glm::vec3(-0.33f, -0.33f,  0.33f),
+			glm::vec3( 0.33f, -0.33f,  0.33f),
+			glm::vec3(-0.33f, -0.33f, -0.33f),
+			glm::vec3( 0.33f, -0.33f, -0.33f),
 
-        std::vector<glm::vec3> facenormals =
-        {
-        	glm::vec3( 0.0f, 0.0f, 1.0f),
-        	glm::vec3( 1.0f, 0.0f, 0.0f),
-        	glm::vec3( 0.0f, 0.0f,-1.0f),
-        	glm::vec3(-1.0f, 0.0f, 0.0f),
-        	glm::vec3( 0.0f,-1.0f, 0.0f),
-        	glm::vec3( 0.0f, 1.0f, 0.0f),
-        };
+			glm::vec3(-0.33f,  0.33f,  0.33f),
+			glm::vec3( 0.33f,  0.33f,  0.33f),
+			glm::vec3(-0.33f,  0.33f, -0.33f),
+			glm::vec3( 0.33f,  0.33f, -0.33f),
+		};
 
-        std::vector<glm::vec3> tmp_normals(vertices.size(), glm::vec3(0.0f));
-	    std::vector<int> counts(vertices.size(), 0);
+		std::vector<glm::vec2> tmp_UVcoords = 
+		{
+			glm::vec2(0.0f, 0.0f),
+			glm::vec2(1.0f, 0.0f),
+			glm::vec2(0.0f, 1.0f),
+			glm::vec2(1.0f, 1.0f),
+		};
 
-        for (int i = 0; i < indices.size(); i++)
-	    {
-    		unsigned int faceIndex = i/6;
-			tmp_normals[indices[i]] += facenormals[faceIndex];
-			counts[indices[i]]++;
-        }
+		std::vector<int> tmp_indices = 
+		{
+			// front
+			0, 1, 4, 5,
+			// right
+			1, 3, 5, 7,
+			// back
+			3, 2, 7, 6,
+			// left
+			2, 0, 6, 4,
+			// bottom
+			2, 3, 0, 1,
+			// top
+			4, 5, 6, 7
+		};
 
-        for (int i = 0; i < vertices.size(); i++)
-		    tmp_normals[i] = glm::normalize(tmp_normals[i] / GLfloat(counts[i]));
+		std::vector<GLuint> faceIndices=
+		{
+			0, 1, 2,
+			2, 1, 3
+		};
 
-        for (int i = 0; i < tmp_normals.size(); i++)
-            normals.push_back(tmp_normals[i]);
+		for (size_t i = 0; i < tmp_indices.size(); ++i)
+		{
+			vertices.push_back(tmp_vertices[tmp_indices[i]]);
+			normals.push_back(tmp_normals[tmp_indices[i]]);
+			UVcoords.push_back(tmp_UVcoords[i%4]);
+		}
 
-        initNormalBuffer();
+		for (int i = 0; i < 6; i++)
+			for (size_t j = 0; j < faceIndices.size(); ++j)
+				indices.push_back(faceIndices[j] + i * 4);
 
+		initTexture();
+
+		initVertexBuffer();
+		initUVbuffer();
+		initNormalBuffer();
+		initIndexBuffer();
 	}
 
 }

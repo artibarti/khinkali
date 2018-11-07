@@ -7,6 +7,7 @@
 #include <map>
 #include "utils/gltypes.hpp"
 #include "glshader.hpp"
+#include "utils/gllog.hpp"
 
 namespace khinkali
 {
@@ -22,6 +23,7 @@ namespace khinkali
             GLuint program;
             std::map<uint, GLShader> vertex_shaders;
             std::map<uint, GLShader> fragment_shaders;
+            GLchar buffer[4098];            
     };
 
     GLShaderProgram::GLShaderProgram()
@@ -40,6 +42,18 @@ namespace khinkali
             glAttachShader(program, shader.second.getShader());            
         }
         glLinkProgram(program);
+
+	    GLint status;    
+        glGetProgramiv(program, GL_LINK_STATUS, &status);
+        if (status == GL_FALSE)
+	    {
+		    glGetProgramInfoLog(program, sizeof(buffer) / sizeof(GLchar), NULL, buffer);
+		    llog("Error while linking shader program");
+            llog(buffer);
+            memset(buffer, 0, sizeof buffer);
+	    }
+
+
         return program;
     }
 
