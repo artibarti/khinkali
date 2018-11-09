@@ -13,6 +13,12 @@
 namespace khinkali
 {
 
+    enum GLShaderType 
+    { 
+        GL_SHADER_TYPE_VERTEX, 
+        GL_SHADER_TYPE_FRAGMENT 
+    };    
+
     class GLShader
     {
         public:

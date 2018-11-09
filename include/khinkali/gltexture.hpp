@@ -6,11 +6,13 @@
 #include <string>
 #include <iostream>
 #include "utils/gllog.hpp"
+#include "utils/gltypes.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "thirdparty/stb_image.h"
 
 namespace khinkali
 {
+
     class GLTexture
     {
         public:
@@ -19,6 +21,7 @@ namespace khinkali
             void activate();
 
         private:
+            void createTextureWithSolidColor();
             GLuint texture;
     };
 
@@ -49,7 +52,7 @@ namespace khinkali
     void GLTexture::activate()
     {
         glActiveTexture(GL_TEXTURE0);    
-    	glBindTexture(GL_TEXTURE_2D, texture);
+        glBindTexture(GL_TEXTURE_2D, texture);        
     }
 }
 

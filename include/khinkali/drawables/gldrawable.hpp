@@ -3,14 +3,14 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "../thirdparty/stb_image.h"
-#include "../utils/gltypes.hpp"
 #include <glm/vec2.hpp>
 #include <vector>
+#include <algorithm>
+#include "../thirdparty/stb_image.h"
+#include "../utils/gltypes.hpp"
 #include "../utils/glconsts.hpp"
 #include "../utils/glutils.hpp"
 #include "../utils/gllog.hpp"
-#include <algorithm>
 #include "../glshader.hpp"
 #include "../glshaderprogram.hpp"
 #include "../gltexture.hpp"
@@ -31,9 +31,11 @@ namespace khinkali
             // buffer initialization
             void initVertexBuffer();
             void initColorBuffer();
-            void initIndexBuffer();
             void initNormalBuffer();
             void initUVbuffer();
+
+            // indices
+            void initIndices();
 
             // texture
             GLTexture* texture;
@@ -125,7 +127,7 @@ namespace khinkali
 	    glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    void GLDrawable::initIndexBuffer()
+    void GLDrawable::initIndices()
     {
         glGenBuffers(1, &index_buffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);

@@ -94,7 +94,7 @@ namespace khinkali
 		initVertexBuffer();
 		initUVbuffer();
 		initNormalBuffer();
-		initIndexBuffer();
+		initIndices();
 	}
 
 }

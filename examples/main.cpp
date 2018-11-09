@@ -45,8 +45,8 @@ int main(int argc, char** argv)
     GLTexture brick_texture("textures/bricks.jpg");
     for (auto cube : cubes)
     {
-        cube -> attachTexture(&brick_texture);
         scene.attachDrawable(cube);
+        cube -> attachTexture(&brick_texture);
     }
 
     GLTexture chess_texture("textures/grass2.jpg");    

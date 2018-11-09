@@ -77,7 +77,7 @@ namespace khinkali
 
     GLCamera::GLCamera(int width, int height)
     {
-        cam_pos = glm::vec3(0.0f, 3.0f, 5.0f);
+        cam_pos = glm::vec3(0.0f, 0.5f, 5.0f);
 
         yaw = 0.0;
         pitch = 0.0;
@@ -92,6 +92,8 @@ namespace khinkali
 
     void GLCamera::initMatrices()
     {
+        cam_pos.y = 0.5;
+
         glm::mat4 rotation = 
             glm::rotate(yaw, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::rotate(pitch, glm::vec3(1.0f, 0.0f, 0.0f));
 

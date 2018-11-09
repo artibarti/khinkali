@@ -32,7 +32,7 @@ namespace khinkali
         indices.push_back(0);
         indices.push_back(2);
         indices.push_back(1);
-        initIndexBuffer();
+        initIndices();
 
     }
 }
