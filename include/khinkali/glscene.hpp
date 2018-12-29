@@ -21,6 +21,8 @@
 #include "drawables/gldrawable.hpp"
 #include "glcamera.hpp"
 #include "glshaderprogram.hpp"
+#include "glinputhandler.hpp"
+#include "gleventhandler.hpp"
 
 namespace khinkali
 {
@@ -30,27 +32,27 @@ namespace khinkali
             
             GLScene(int width, int height);
 
+            void setSize(int width, int height);
             void setBackground(glm::vec3 color);
             void setBackground(double r, double g, double b);
-            void setSize(int width, int height);
-            void attachDrawable(GLDrawable* drawable);
-            void attachProgram(GLShaderProgram *program);
-            void keyPressed(GLint key, GLint scanCode, GLint action, GLint mods);
-            void mouseMoved(GLdouble x, GLdouble y);
-            void draw();
 
+            void attachDrawable(GLDrawable* drawable);
+            void attachProgram(GLShaderProgram *program);            
+            void attachCallback(GLEventType eventType, void(*callback)(GLScene*));
+            void processEvent(GLInputHandler* inputHander);
+
+            void draw();
             void showInfo() const;
 
         private:
 
             std::vector<GLDrawable*> drawables;
-
             int scene_width = 0;
             int scene_height = 0;
-            glm::vec3 backgroundColor;   
-            GLdouble mouseX = -1.0, mouseY = -1.0;
-
+            glm::vec3 backgroundColor;       
             GLCamera camera;
+            GLEventHandler<GLScene> eventHandler;
+
     };
 
     GLScene::GLScene(int width, int height)
@@ -103,47 +105,14 @@ namespace khinkali
             drawable -> attachProgram(program);
     }
 
-    void GLScene::keyPressed(GLint key, GLint scanCode, GLint action, GLint mods)
+    void GLScene::attachCallback(GLEventType eventType, void(*callback)(GLScene*))
     {
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
-        {
-            switch(key) 
-            {
-
-                case GLFW_KEY_W:
-                    camera.moveForward();
-                    break;
-            
-                case GLFW_KEY_S: 
-                    camera.moveBack();
-                    break;
-            
-                case GLFW_KEY_A: 
-                    camera.moveLeft();
-                    break;
-            
-                case GLFW_KEY_D: 
-                    camera.moveRight();
-                    break;            
-            }
-        }        
+        this->eventHandler.addCallback(eventType, callback);
     }
 
-    void GLScene::mouseMoved(GLdouble x, GLdouble y)
-    {        
-        if (mouseX == -1.0)
-        {
-            mouseX = x;
-            mouseY = y;
-            return;
-        }
-        
-        GLdouble deltaX = x - mouseX;
-        GLdouble deltaY = y - mouseY;
-        mouseX = x;
-        mouseY = y;                
+    void processEvent(GLInputHandler* inputHander)
+    {
 
-        camera.turn(deltaX, deltaY);
     }
 
     void GLScene::showInfo() const

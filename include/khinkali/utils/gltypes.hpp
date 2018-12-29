@@ -10,6 +10,12 @@ namespace khinkali
         GL_DRAWABLE_TYPE_CUBE        
     };
 
+    enum GLEventType
+    {
+        GL_ACTION_TYPE_KEY_EVENT,
+        GL_ACTION_TYPE_MOUSE_EVENT,
+        GL_ACTION_TYPE_HIT_EVENT
+    };
 };
 
 #endif

@@ -3,6 +3,63 @@
 
 using namespace khinkali;
 
+    /*
+    void GLCore::keyPressedEventBroadcaster(GLint key, GLint scanCode, GLint action, GLint mods)
+    {
+        
+        if ( key == GLFW_KEY_ESCAPE )
+            glfwSetWindowShouldClose(window.getWindow(), true);
+    }
+
+    void GLCore::mouseMovedEventBroadcaster(GLdouble x, GLdouble y)
+    {
+        for (auto scene : scenes)
+            scene.second -> mouseMoved(x,y);
+    }
+    */
+
+    void keyPressed(GLScene* scene)
+    {
+        /*
+        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        {
+            switch(key) 
+            {
+                case GLFW_KEY_W:
+                    camera.moveForward();
+                    break;
+                case GLFW_KEY_S: 
+                    camera.moveBack();
+                    break;            
+                case GLFW_KEY_A: 
+                    camera.moveLeft();
+                    break;            
+                case GLFW_KEY_D: 
+                    camera.moveRight();
+                    break;            
+            }
+        }        
+        */
+    }
+
+    void mouseMoved(GLScene* scene)
+    {   
+        /*     
+        if (mouseX == -1.0)
+        {
+            mouseX = x;
+            mouseY = y;
+            return;
+        }
+        
+        GLdouble deltaX = x - mouseX;
+        GLdouble deltaY = y - mouseY;
+        mouseX = x;
+        mouseY = y;                
+        camera.turn(deltaX, deltaY);
+        */
+    }
+
 int main(int argc, char** argv)
 {
 
@@ -20,7 +77,7 @@ int main(int argc, char** argv)
     GLCube cube8 = GLCube(glm::vec3(3,0,-2), 1.0);
     
     GLCube cube9 = GLCube(glm::vec3(-7,0,-2), 1.0);
-    GLCube cube10 = GLCube(glm::vec3(-7,1,-2), 1.0);
+    GLCube cube10 = GLCube(glm::vec3(-7,1,-2), 3.0);
     GLCube cube11 = GLCube(glm::vec3(-9,0,-2), 1.0);
     GLCube cube12 = GLCube(glm::vec3(-7,2,-2), 1.0);
     GLCube cube13 = GLCube(glm::vec3(-7,3,-2), 1.0);
@@ -31,7 +88,6 @@ int main(int argc, char** argv)
 
     GLCube floor = GLCube(glm::vec3(0,-15,0), 30.0);
 
-
     cubes = 
     {
         &cube1, &cube2, &cube3, &cube4, &cube5, &cube6, &cube7, &cube8,
@@ -39,7 +95,7 @@ int main(int argc, char** argv)
     };
 
     GLScene scene = GLScene(640,480);
-    core.attachScene(0, &scene);
+    core.attachScene(&scene);
     scene.setBackground(GL_COLOR_ORANGE);
 
     GLTexture brick_texture("textures/bricks.jpg");
