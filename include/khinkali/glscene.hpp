@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include <glm/matrix.hpp>
 #include <glm/vec3.hpp>
@@ -22,6 +23,7 @@
 #include "glcamera.hpp"
 #include "glshaderprogram.hpp"
 #include "glinputhandler.hpp"
+#include "events/glevent.hpp"
 
 namespace khinkali
 {
@@ -46,6 +48,7 @@ namespace khinkali
         private:
 
             std::vector<GLDrawable*> drawables;
+            std::map<GLEvent, std::vector<GLDrawable*>> eventSubs;
             GLCamera camera;
             GLWindow* window;
 
