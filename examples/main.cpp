@@ -21,7 +21,8 @@ using namespace khinkali;
                 case GLFW_KEY_D: 
                     scene -> getCamera() -> moveRight();
                     break;            
-                case GLFW_KEY_ESCAPE: 
+                case GLFW_KEY_ESCAPE:
+                    scene -> detach();
                     break;            
             }
         }                

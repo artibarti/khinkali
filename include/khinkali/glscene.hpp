@@ -22,7 +22,6 @@
 #include "glcamera.hpp"
 #include "glshaderprogram.hpp"
 #include "glinputhandler.hpp"
-#include "gleventhandler.hpp"
 
 namespace khinkali
 {
@@ -39,13 +38,14 @@ namespace khinkali
             
             void setKeyCallback(void(*callback)(KeyEvent*, GLScene*));
             void setMouseCallback(void(*callback)(MouseEvent*, GLScene*));    
-            void handleInputAndDraw(KeyEvent* keyEvent, MouseEvent* mouseEvent);
+            bool handleInputAndDraw(KeyEvent* keyEvent, MouseEvent* mouseEvent);
             GLCamera* getCamera();
+
+            void detach();
 
         private:
 
             std::vector<GLDrawable*> drawables;
-            GLEventHandler<GLScene> eventHandler;
             GLCamera camera;
             GLWindow* window;
 
@@ -56,6 +56,7 @@ namespace khinkali
             int scene_height = 0;
             glm::vec3 backgroundColor;       
 
+            bool active = true;
     };
 
     GLScene::GLScene(int width, int height)
@@ -82,7 +83,7 @@ namespace khinkali
         drawables.push_back(drawable);
     }
 
-    void GLScene::handleInputAndDraw(KeyEvent* keyEvent, MouseEvent* mouseEvent)
+    bool GLScene::handleInputAndDraw(KeyEvent* keyEvent, MouseEvent* mouseEvent)
     {
         glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0);
         glClearDepth(1.0);        
@@ -104,6 +105,8 @@ namespace khinkali
         	glUniformMatrix4fv(UNIFORM_NORMAL, 1, GL_FALSE, glm::value_ptr(camera.getNormalMatrix()));
             drawable -> draw();
         }
+
+        return active;
     }
 
     void GLScene::attachProgram(GLShaderProgram *program)
@@ -126,6 +129,12 @@ namespace khinkali
     {
         return &camera;
     }
+
+    void GLScene::detach()
+    {
+        this -> active = false;
+    }
+
 }
 
 #endif

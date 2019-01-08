@@ -61,7 +61,11 @@ namespace khinkali
         while (true)	
         {                
             glfwPollEvents();
-            scene -> handleInputAndDraw(inputHandler.getKeyEvent(), inputHandler.getMouseEvent());
+            if (! scene -> handleInputAndDraw(inputHandler.getKeyEvent(), inputHandler.getMouseEvent()) )
+            {
+                this -> terminate();
+            }
+
             glfwSwapBuffers(window.getWindow());
 
             if (glfwWindowShouldClose( window.getWindow() ))
@@ -75,8 +79,6 @@ namespace khinkali
     void GLCore::terminate()
     {
         glfwSetWindowShouldClose(window.getWindow(), true);        
-        window.destroy();
-        glfwTerminate();         
     }
 
     void GLCore::attachScene(GLScene* scene)

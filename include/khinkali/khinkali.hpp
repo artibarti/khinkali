@@ -15,7 +15,6 @@
 #include "glshader.hpp"
 #include "gltexture.hpp"
 #include "glcamera.hpp"
-#include "gleventhandler.hpp"
 #include "glinputhandler.hpp"
 #include "drawables/gldrawable.hpp"
 #include "drawables/gltriangle.hpp"
