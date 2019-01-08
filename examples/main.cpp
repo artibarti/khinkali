@@ -3,67 +3,58 @@
 
 using namespace khinkali;
 
-    /*
-    void GLCore::keyPressedEventBroadcaster(GLint key, GLint scanCode, GLint action, GLint mods)
+    void keyCallback(KeyEvent* keyEvent, GLScene* scene)
     {
-        
-        if ( key == GLFW_KEY_ESCAPE )
-            glfwSetWindowShouldClose(window.getWindow(), true);
-    }
-
-    void GLCore::mouseMovedEventBroadcaster(GLdouble x, GLdouble y)
-    {
-        for (auto scene : scenes)
-            scene.second -> mouseMoved(x,y);
-    }
-    */
-
-    void keyPressed(GLScene* scene)
-    {
-        /*
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        if (keyEvent -> actions == GLFW_PRESS || keyEvent -> actions == GLFW_REPEAT)
         {
-            switch(key) 
+            switch(keyEvent -> key) 
             {
                 case GLFW_KEY_W:
-                    camera.moveForward();
+                    scene -> getCamera() -> moveForward();
                     break;
                 case GLFW_KEY_S: 
-                    camera.moveBack();
+                    scene -> getCamera() -> moveBack();
                     break;            
                 case GLFW_KEY_A: 
-                    camera.moveLeft();
+                    scene -> getCamera() -> moveLeft();
                     break;            
                 case GLFW_KEY_D: 
-                    camera.moveRight();
+                    scene -> getCamera() -> moveRight();
+                    break;            
+                case GLFW_KEY_ESCAPE: 
                     break;            
             }
-        }        
-        */
+        }                
     }
+    
+    GLdouble mouseX = -1.0, mouseY = -1.0;
 
-    void mouseMoved(GLScene* scene)
+    void mouseCallback(MouseEvent* mouseEvent, GLScene* scene)
     {   
-        /*     
         if (mouseX == -1.0)
         {
-            mouseX = x;
-            mouseY = y;
+            mouseX = mouseEvent -> x;
+            mouseY = mouseEvent -> y;
             return;
         }
         
-        GLdouble deltaX = x - mouseX;
-        GLdouble deltaY = y - mouseY;
-        mouseX = x;
-        mouseY = y;                
-        camera.turn(deltaX, deltaY);
-        */
+        GLdouble deltaX = mouseEvent -> x - mouseX;
+        GLdouble deltaY = mouseEvent -> y - mouseY;
+        mouseX = mouseEvent -> x;
+        mouseY = mouseEvent -> y;                
+        scene -> getCamera() -> turn(deltaX, deltaY);
     }
 
 int main(int argc, char** argv)
 {
 
     GLCore core(640, 480, "Test window");
+
+    GLScene scene = GLScene(640,480);
+    core.attachScene(&scene);
+    scene.setBackground(GL_COLOR_ORANGE);
+    scene.setKeyCallback(keyCallback);
+    scene.setMouseCallback(mouseCallback);
 
     std::vector<GLCube*> cubes;    
 
@@ -75,7 +66,6 @@ int main(int argc, char** argv)
     GLCube cube6 = GLCube(glm::vec3(-3,0,0), 1.0);
     GLCube cube7 = GLCube(glm::vec3(2,0,-2), 1.0);
     GLCube cube8 = GLCube(glm::vec3(3,0,-2), 1.0);
-    
     GLCube cube9 = GLCube(glm::vec3(-7,0,-2), 1.0);
     GLCube cube10 = GLCube(glm::vec3(-7,1,-2), 3.0);
     GLCube cube11 = GLCube(glm::vec3(-9,0,-2), 1.0);
@@ -93,10 +83,6 @@ int main(int argc, char** argv)
         &cube1, &cube2, &cube3, &cube4, &cube5, &cube6, &cube7, &cube8,
         &cube9, &cube10, &cube11, &cube12, &cube13, &cube14, &cube15, &cube16, &cube17
     };
-
-    GLScene scene = GLScene(640,480);
-    core.attachScene(&scene);
-    scene.setBackground(GL_COLOR_ORANGE);
 
     GLTexture brick_texture("textures/bricks.jpg");
     for (auto cube : cubes)

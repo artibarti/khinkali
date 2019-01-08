@@ -26,9 +26,8 @@ namespace khinkali
             
             void start();
             void attachScene(GLScene* scene);
-            void detachScene();
-            void showInfo();
-        
+            void terminate();
+
         private:
             GLWindow window;
             GLInputHandler inputHandler;
@@ -36,8 +35,6 @@ namespace khinkali
             std::string window_name = "Unnamed window";
             int window_width = 0;
             int window_height = 0;
-
-            void terminate();
     };
 
     GLCore::GLCore(int win_width, int win_height, const char* win_name)
@@ -64,18 +61,7 @@ namespace khinkali
         while (true)	
         {                
             glfwPollEvents();
-
-            if (inputHandler.isThereAnyKeyboardInputToHandle())
-            {
-
-            }
-            if (inputHandler.isThereAnyMouseInputToHandle())
-            {
-
-            }
-
-            scene -> draw();
-
+            scene -> handleInputAndDraw(inputHandler.getKeyEvent(), inputHandler.getMouseEvent());
             glfwSwapBuffers(window.getWindow());
 
             if (glfwWindowShouldClose( window.getWindow() ))
@@ -96,18 +82,7 @@ namespace khinkali
     void GLCore::attachScene(GLScene* scene)
     {
         this -> scene = scene;
-    }
-
-    void GLCore::detachScene()
-    {
-        this -> scene = nullptr;
-    }
-  
-    void GLCore::showInfo()
-    {
-        std::cout << "GLCore object" << std::endl;
-        std::cout << std::endl;
-    }
+    }  
 };
 
 #endif

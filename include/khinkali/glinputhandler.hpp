@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "glwindow.hpp"
+#include <iostream>
 
 namespace khinkali
 {    
@@ -30,20 +31,19 @@ namespace khinkali
             GLInputHandler();
             
             void setWindow(GLWindow* win);
-            void pushMouseEvent(int key, int scancode, int action, int mods);
-            void pushKeyEvent(double x, double y);
-            MouseEvent getMouseEvent();
-            KeyEvent getKeyEvent();
-            bool isThereAnyKeyboardInputToHandle();
-            bool isThereAnyMouseInputToHandle();
+            MouseEvent* getMouseEvent();
+            KeyEvent* getKeyEvent();
 
         private:
             
             MouseEvent mouseEvent;
             KeyEvent keyEvent;
             GLWindow* window;
+            
             bool activeMouseEvent = false;
             bool activeKeyboardEvent = false;
+            bool isThereAnyKeyboardInputToHandle();
+            bool isThereAnyMouseInputToHandle();
 
             static void keyPressedEventCatcher(GLFWwindow* window, int key, int scancode, int actions, int mods);    
             static void mouseMovedEventCatcher(GLFWwindow* window, GLdouble x, GLdouble y);
@@ -51,7 +51,7 @@ namespace khinkali
 
     GLInputHandler::GLInputHandler()
     {
-        std::cout << "Empty constructor called" << std::endl;
+
     }
 
     void GLInputHandler::setWindow(GLWindow* win)
@@ -104,6 +104,27 @@ namespace khinkali
         }
         else
             return false;
+    }
+
+    MouseEvent* GLInputHandler::getMouseEvent()
+    {
+
+        if (isThereAnyMouseInputToHandle())
+        {
+            return &mouseEvent;
+        }
+        else
+            return nullptr;
+    }
+
+    KeyEvent* GLInputHandler::getKeyEvent()
+    {
+        if (isThereAnyKeyboardInputToHandle())
+        {
+            return &keyEvent;
+        }
+        else
+            return nullptr;
     }
 
 };

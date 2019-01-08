@@ -32,26 +32,29 @@ namespace khinkali
             
             GLScene(int width, int height);
 
-            void setSize(int width, int height);
             void setBackground(glm::vec3 color);
             void setBackground(double r, double g, double b);
-
             void attachDrawable(GLDrawable* drawable);
             void attachProgram(GLShaderProgram *program);            
-            void attachCallback(GLEventType eventType, void(*callback)(GLScene*));
-            void processEvent(GLInputHandler* inputHander);
-
-            void draw();
-            void showInfo() const;
+            
+            void setKeyCallback(void(*callback)(KeyEvent*, GLScene*));
+            void setMouseCallback(void(*callback)(MouseEvent*, GLScene*));    
+            void handleInputAndDraw(KeyEvent* keyEvent, MouseEvent* mouseEvent);
+            GLCamera* getCamera();
 
         private:
 
             std::vector<GLDrawable*> drawables;
+            GLEventHandler<GLScene> eventHandler;
+            GLCamera camera;
+            GLWindow* window;
+
+            void (*keyCallback)(KeyEvent*, GLScene*) = nullptr;
+            void (*mouseCallback)(MouseEvent*, GLScene*) = nullptr;
+
             int scene_width = 0;
             int scene_height = 0;
             glm::vec3 backgroundColor;       
-            GLCamera camera;
-            GLEventHandler<GLScene> eventHandler;
 
     };
 
@@ -74,22 +77,26 @@ namespace khinkali
         backgroundColor[2] = b;
     }
 
-    void GLScene::setSize(int width, int height)
-    {
-        scene_width = width;
-        scene_height = height;
-    }
-
     void GLScene::attachDrawable(GLDrawable* drawable)
     {
         drawables.push_back(drawable);
     }
 
-    void GLScene::draw()
+    void GLScene::handleInputAndDraw(KeyEvent* keyEvent, MouseEvent* mouseEvent)
     {
         glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0);
         glClearDepth(1.0);        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        if (keyEvent != nullptr && keyCallback != nullptr)
+        {
+            this -> keyCallback(keyEvent, this);
+        }
+
+        if (mouseEvent != nullptr && mouseCallback != nullptr)
+        {
+            this -> mouseCallback(mouseEvent, this);
+        }
 
         for (auto drawable : drawables)
         {
@@ -105,22 +112,20 @@ namespace khinkali
             drawable -> attachProgram(program);
     }
 
-    void GLScene::attachCallback(GLEventType eventType, void(*callback)(GLScene*))
+    void GLScene::setKeyCallback(void(*callback)(KeyEvent*, GLScene*))
     {
-        this->eventHandler.addCallback(eventType, callback);
+        this -> keyCallback = callback;
     }
 
-    void processEvent(GLInputHandler* inputHander)
+    void GLScene::setMouseCallback(void(*callback)(MouseEvent*, GLScene*))
     {
-
+        this -> mouseCallback = callback;
     }
 
-    void GLScene::showInfo() const
+    GLCamera* GLScene::getCamera()
     {
-        std::cout << "GLScene object" << std::endl;
-        std::cout << "Contains " << drawables.size() << " drawables" << std::endl;
+        return &camera;
     }
-
 }
 
 #endif
