@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <map>
 #include "utils/gltypes.hpp"
 #include "utils/glutils.hpp"
 

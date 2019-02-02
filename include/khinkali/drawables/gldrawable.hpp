@@ -25,6 +25,9 @@ namespace khinkali
             void setColor(glm::vec3 color);
             void attachProgram(GLShaderProgram *program_);
             void attachTexture(GLTexture* texture_);
+            bool isHit(glm::vec3 coord);
+            bool isInside(glm::vec3 coord);
+            bool hasProgram();
 
         protected:
 
@@ -51,7 +54,7 @@ namespace khinkali
             // buffer objects and shader program
             GLuint vertex_buffer, color_buffer, index_buffer, normal_buffer, uv_buffer;
             GLuint vertex_array = 0;
-            GLuint* program; 
+            GLuint* program = nullptr; 
 
             // non user-related info variables
             GLDrawableType drawable_type;
@@ -75,6 +78,11 @@ namespace khinkali
             colors.push_back(glm::vec3(r,g,b));
 
         initColorBuffer();
+    }
+
+    bool GLDrawable::hasProgram()
+    {
+        return !(program == nullptr);
     }
 
     void GLDrawable::initVertexBuffer()
@@ -138,7 +146,10 @@ namespace khinkali
     void GLDrawable::draw()
     {
         texture -> activate();
-        glUseProgram(*program);
+        
+        if (hasProgram())
+            glUseProgram(*program);
+
         glBindVertexArray(vertex_array);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
         glDrawElements(draw_mode, indices.size(), GL_UNSIGNED_INT, 0);
@@ -154,6 +165,16 @@ namespace khinkali
     void GLDrawable::attachTexture(GLTexture* texture_)
     {
         texture = texture_;
+    }
+
+    bool isHit(glm::vec3 coord)
+    {
+
+    }
+
+    bool isInside(glm::vec3 coord)
+    {
+        
     }
 }
 

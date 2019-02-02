@@ -5,16 +5,23 @@
 
 namespace khinkali 
 {
+    class GLScene;
+
     class GLEvent
     {
         public:
-            GLEvent();
-            GLEvent(bool (*trigger)());
 
-        private:
-            bool (*trigger)() = nullptr;
+            GLEvent(bool (*trigger)(GLScene*, GLDrawable*), void (*callback)(GLDrawable*));
+            bool (*trigger)(GLScene*, GLDrawable*) = nullptr;
             void (*callback)(GLDrawable*) = nullptr;
     };
+
+    GLEvent::GLEvent(bool (*trigger)(GLScene*, GLDrawable*), void (*callback)(GLDrawable*))
+    {
+        this -> trigger = trigger;
+        this -> callback =callback;
+    }
+
 };
 
 #endif

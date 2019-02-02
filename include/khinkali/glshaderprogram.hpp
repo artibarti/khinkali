@@ -75,6 +75,7 @@ namespace khinkali
             fragment_shaders[pos] = shader;
         }
     }
+
 }
 
 #endif

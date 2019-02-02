@@ -27,6 +27,7 @@
 
 namespace khinkali
 {
+
     class GLScene
     {
         public:
@@ -41,6 +42,9 @@ namespace khinkali
             void setKeyCallback(void(*callback)(KeyEvent*, GLScene*));
             void setMouseCallback(void(*callback)(MouseEvent*, GLScene*));    
             bool handleInputAndDraw(KeyEvent* keyEvent, MouseEvent* mouseEvent);
+            
+            void attachEventSubsribtion(GLEvent* event, GLDrawable* drawable);           
+
             GLCamera* getCamera();
 
             void detach();
@@ -48,7 +52,7 @@ namespace khinkali
         private:
 
             std::vector<GLDrawable*> drawables;
-            std::map<GLEvent, std::vector<GLDrawable*>> eventSubs;
+            std::map<GLEvent*, std::vector<GLDrawable*>> eventSubs;
             GLCamera camera;
             GLWindow* window;
 
@@ -60,6 +64,7 @@ namespace khinkali
             glm::vec3 backgroundColor;       
 
             bool active = true;
+            GLShaderProgram defaultProgram;
     };
 
     GLScene::GLScene(int width, int height)
@@ -67,6 +72,9 @@ namespace khinkali
         scene_width = width;
         scene_height = height;
         camera = GLCamera(scene_width, scene_height);
+
+        defaultProgram.attachShader(0, "../include/khinkali/shaders/texture.vs", GL_VERTEX_SHADER);
+        defaultProgram.attachShader(0, "../include/khinkali/shaders/texture.fs", GL_FRAGMENT_SHADER);
     }
 
     void GLScene::setBackground(glm::vec3 color)
@@ -93,19 +101,26 @@ namespace khinkali
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (keyEvent != nullptr && keyCallback != nullptr)
-        {
             this -> keyCallback(keyEvent, this);
-        }
 
         if (mouseEvent != nullptr && mouseCallback != nullptr)
-        {
             this -> mouseCallback(mouseEvent, this);
-        }
+
+        for(auto eventSub : eventSubs)
+            for (auto drawable : eventSub.second)
+                if (eventSub.first -> trigger(this, drawable))
+                {
+
+                }
 
         for (auto drawable : drawables)
         {
-        	glUniformMatrix4fv(UNIFORM_MODELVIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(camera.getModelViewProjectionMatrix()));
-        	glUniformMatrix4fv(UNIFORM_NORMAL, 1, GL_FALSE, glm::value_ptr(camera.getNormalMatrix()));
+            if (!(drawable -> hasProgram()))
+            {
+                glUseProgram(defaultProgram.getProgram());
+        	    glUniformMatrix4fv(UNIFORM_MODELVIEWPROJECTION, 1, GL_FALSE, glm::value_ptr(camera.getModelViewProjectionMatrix()));
+        	    glUniformMatrix4fv(UNIFORM_NORMAL, 1, GL_FALSE, glm::value_ptr(camera.getNormalMatrix()));
+            }
             drawable -> draw();
         }
 
@@ -127,6 +142,11 @@ namespace khinkali
     {
         this -> mouseCallback = callback;
     }
+
+    void GLScene::attachEventSubsribtion(GLEvent* event, GLDrawable* drawable)
+    {
+        eventSubs[event].push_back(drawable);
+    }           
 
     GLCamera* GLScene::getCamera()
     {
